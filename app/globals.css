@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background-color: #05070b;
+  color: #f3f1ea;
+}
+
+::selection {
+  background: #3e6bff;
+  color: #05070b;
+}
+
+.container-edge {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .container-edge {
+    padding-inline: 4rem;
+  }
+}
+
+.label-tag {
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #a6adbb;
+}
+
+.rule {
+  height: 1px;
+  width: 100%;
+  background: rgba(244, 242, 236, 0.1);
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #3e6bff;
+  outline-offset: 3px;
+}
+
+/* subtle noise / grid backdrop used across dark sections */
+.field-grid {
+  background-image: linear-gradient(rgba(244, 242, 236, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 242, 236, 0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
