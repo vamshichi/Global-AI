@@ -44,11 +44,11 @@ export function StormTimeline() {
           Until now.
         </motion.p>
 
-        <div className="mt-10">
+        {/* <div className="mt-10">
           <Button href="#why-attend" variant="secondary">
             See Why This Matters
           </Button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

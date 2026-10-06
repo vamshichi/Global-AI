@@ -43,11 +43,11 @@ export function Stats() {
           ))}
         </div>
 
-        <div className="mt-14">
+        {/* <div className="mt-14">
           <Button href="#insights" variant="secondary">
             Explore the Full Market Study
           </Button>
-        </div>
+        </div> */}
       </div>
     </section>
   );

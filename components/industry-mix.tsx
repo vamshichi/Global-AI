@@ -25,7 +25,7 @@ export function IndustryMix() {
                 className="h-full bg-signal/80"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-ink">
-                {row.value}%
+                {/* {row.value}% */}
               </span>
             </div>
           </div>

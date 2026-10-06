@@ -91,7 +91,7 @@ export function Hero() {
           >
             <div>
               <p className="label-tag">Thursday</p>
-              <p className="mt-1 text-lg text-ink">26 November 2026</p>
+              <p className="mt-1 text-lg text-ink">10 December 2026</p>
             </div>
             <div>
               <p className="label-tag">Venue</p>
