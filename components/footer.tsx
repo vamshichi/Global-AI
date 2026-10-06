@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="border-t border-line bg-void py-16">
       <div className="container-edge">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {footerColumns.map((col) => (
             <div key={col.heading}>
               <p className="label-tag">{col.heading}</p>

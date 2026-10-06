@@ -12,10 +12,6 @@ export const footerColumns = [
     links: ["Become a Sponsor", "Partnership Tiers", "Sponsor FAQ", "Exhibit With Us"],
   },
   {
-    heading: "Resources",
-    links: ["AI Readiness Index", "Download Brief", "Media Kit", "Press", "Newsletter Sign-up"],
-  },
-  {
     heading: "Connect",
     links: ["Contact Us", "LinkedIn", "WhatsApp Updates"],
   },
