@@ -25,7 +25,7 @@ export default function Home() {
         <ExperiencesSection />
         <WhyAttend />
         <Agenda />
-        <SpeakersSection />
+        {/* <SpeakersSection /> */}
         <PartnerSection />
         <DelegatesSection />
         <VenueSection />
