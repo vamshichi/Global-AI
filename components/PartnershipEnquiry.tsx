@@ -55,7 +55,7 @@ export default function PartnershipEnquiry() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const updateField = (
     field: keyof typeof initialForm,
@@ -68,42 +68,42 @@ const [errorMessage, setErrorMessage] = useState("");
   };
 
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  if (!form.consent || isSubmitting) return;
+    if (!form.consent || isSubmitting) return;
 
-  setIsSubmitting(true);
-  setErrorMessage("");
+    setIsSubmitting(true);
+    setErrorMessage("");
 
-  try {
-    const response = await fetch("/api/partnership-enquiry", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    });
+    try {
+      const response = await fetch("/api/partnership-enquiry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok || !result.success) {
-      throw new Error(
-        result.message || "Failed to submit your enquiry."
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.message || "Failed to submit your enquiry."
+        );
+      }
+
+      setSubmitted(true);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
       );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setSubmitted(true);
-  } catch (error) {
-    setErrorMessage(
-      error instanceof Error
-        ? error.message
-        : "Something went wrong. Please try again."
-    );
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
 
 
   if (submitted) {
@@ -566,10 +566,10 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
             <div className="mt-10 border-t border-line pt-8">
               {errorMessage && (
-  <p role="alert" className="mt-4 text-sm text-red-400">
-    {errorMessage}
-  </p>
-)}
+                <p role="alert" className="mt-4 text-sm text-red-400">
+                  {errorMessage}
+                </p>
+              )}
               <button
                 type="submit"
                 disabled={!form.consent}
@@ -596,10 +596,10 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                 "
               >
                 <span>
-  {isSubmitting
-    ? "Submitting..."
-    : "Request a Partnership Discussion"}
-</span>
+                  {isSubmitting
+                    ? "Submitting..."
+                    : "Request a Partnership Discussion"}
+                </span>
 
                 <span
                   className="
@@ -924,10 +924,9 @@ function Checkbox({
           justify-center
           border
           transition
-          ${
-            checked
-              ? "border-[#3E6BFF] bg-[#3E6BFF]"
-              : "border-line bg-transparent"
+          ${checked
+            ? "border-[#3E6BFF] bg-[#3E6BFF]"
+            : "border-line bg-transparent"
           }
         `}
       >

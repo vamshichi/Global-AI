@@ -249,7 +249,7 @@ export function RegistrationSection() {
               <Mail className="h-5 w-5 text-signal" />
 
               <span className="text-sm">
-                Email on request
+                info@globalbusinesssummits.com
               </span>
             </div>
 
@@ -269,7 +269,7 @@ export function RegistrationSection() {
               </span>
             </div>
 
-            <div className="flex items-center gap-3 text-ink-dim">
+            {/* <div className="flex items-center gap-3 text-ink-dim">
               <Linkedin className="h-5 w-5 text-signal" />
 
               <span className="text-sm">
@@ -283,7 +283,7 @@ export function RegistrationSection() {
               <span className="text-sm">
                 WhatsApp Broadcast Sign-up
               </span>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
