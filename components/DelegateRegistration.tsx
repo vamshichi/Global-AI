@@ -71,6 +71,8 @@ const initialForm = {
 export default function DelegateRegistration() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+const [errorMessage, setErrorMessage] = useState("");
 
   const updateField = (field: string, value: string | boolean) => {
     setForm((prev) => ({
@@ -95,16 +97,44 @@ export default function DelegateRegistration() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
 
-    if (!form.consent) return;
+  if (!form.consent || isSubmitting) return;
 
-    // Connect your API here.
-    console.log("Delegate registration:", form);
+  setIsSubmitting(true);
+  setErrorMessage("");
+
+  try {
+    const response = await fetch("/api/delegate-registration", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message || "Registration failed. Please try again."
+      );
+    }
 
     setSubmitted(true);
-  };
+  } catch (error) {
+    setErrorMessage(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again."
+    );
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (submitted) {
     return (
@@ -429,37 +459,32 @@ export default function DelegateRegistration() {
 
             {/* SUBMIT */}
             <div className="mt-10 border-t border-line pt-8">
+              {errorMessage && (
+  <p role="alert" className="mb-4 text-sm text-red-500">
+    {errorMessage}
+  </p>
+)}
               <button
-                type="submit"
-                disabled={!form.consent}
-                className="
-                  group
-                  flex
-                  w-full
-                  items-center
-                  justify-between
-                  bg-ink
-                  px-6
-                  py-4
-                  text-sm
-                  font-medium
-                  uppercase
-                  tracking-[0.12em]
-                  text-void
-                  transition-all
-                  hover:bg-[#3E6BFF]
-                  disabled:cursor-not-allowed
-                  disabled:opacity-40
-                  md:w-auto
-                  md:min-w-[280px]
-                "
-              >
-                <span>Submit Registration Interest</span>
+  type="submit"
+  disabled={!form.consent || isSubmitting}
+  className="
+    group flex w-full items-center justify-between
+    bg-ink px-6 py-4 text-sm font-medium uppercase
+    tracking-[0.12em] text-void transition-all
+    hover:bg-[#3E6BFF] disabled:cursor-not-allowed
+    disabled:opacity-40 md:w-auto md:min-w-[280px]
+  "
+>
+  <span>
+    {isSubmitting
+      ? "Submitting..."
+      : "Submit Registration Interest"}
+  </span>
 
-                <span className="ml-8 transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </button>
+  <span className="ml-8">
+    →
+  </span>
+</button>
 
               <p className="mt-4 max-w-xl text-xs leading-5 text-ink-dim">
                 By submitting this form, you confirm that the information

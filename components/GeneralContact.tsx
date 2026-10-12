@@ -26,6 +26,8 @@ const initialForm = {
 export default function GeneralContact() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+const [errorMessage, setErrorMessage] = useState("");
 
   const updateField = (
     field: keyof typeof initialForm,
@@ -37,16 +39,44 @@ export default function GeneralContact() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
 
-    if (!form.consent) return;
+  if (!form.consent || isSubmitting) return;
 
-    // Connect your API here
-    console.log("General enquiry:", form);
+  setIsSubmitting(true);
+  setErrorMessage("");
+
+  try {
+    const response = await fetch("/api/general-contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message || "Failed to send your enquiry."
+      );
+    }
 
     setSubmitted(true);
-  };
+  } catch (error) {
+    setErrorMessage(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again."
+    );
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   /* ================================================= */
   /* SUCCESS STATE */
@@ -457,6 +487,11 @@ export default function GeneralContact() {
             {/* ================================================= */}
 
             <div className="mt-10 border-t border-line pt-8">
+              {errorMessage && (
+  <p role="alert" className="mb-4 text-sm text-red-500">
+    {errorMessage}
+  </p>
+)}
               <button
                 type="submit"
                 disabled={!form.consent}
@@ -478,14 +513,15 @@ export default function GeneralContact() {
                   hover:bg-[#3E6BFF]
                   disabled:cursor-not-allowed
                   disabled:opacity-40
+                  disabled={!form.consent || isSubmitting}
                   md:w-auto
                   md:min-w-[220px]
                 "
               >
                 <span>
-                  Send Enquiry
-                </span>
-
+  {isSubmitting ? "Sending..." : "Send Enquiry"}
+</span>
+                
                 <span
                   className="
                     ml-8

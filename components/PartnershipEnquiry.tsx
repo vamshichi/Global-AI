@@ -54,6 +54,8 @@ const initialForm = {
 export default function PartnershipEnquiry() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+const [errorMessage, setErrorMessage] = useState("");
 
   const updateField = (
     field: keyof typeof initialForm,
@@ -65,16 +67,44 @@ export default function PartnershipEnquiry() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
 
-    if (!form.consent) return;
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    // Connect your API here.
-    console.log("Partnership enquiry:", form);
+  if (!form.consent || isSubmitting) return;
+
+  setIsSubmitting(true);
+  setErrorMessage("");
+
+  try {
+    const response = await fetch("/api/partnership-enquiry", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message || "Failed to submit your enquiry."
+      );
+    }
 
     setSubmitted(true);
-  };
+  } catch (error) {
+    setErrorMessage(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again."
+    );
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   if (submitted) {
     return (
@@ -535,6 +565,11 @@ export default function PartnershipEnquiry() {
             {/* ================================================= */}
 
             <div className="mt-10 border-t border-line pt-8">
+              {errorMessage && (
+  <p role="alert" className="mt-4 text-sm text-red-400">
+    {errorMessage}
+  </p>
+)}
               <button
                 type="submit"
                 disabled={!form.consent}
@@ -554,15 +589,17 @@ export default function PartnershipEnquiry() {
                   text-void
                   transition-all
                   hover:bg-[#3E6BFF]
-                  disabled:cursor-not-allowed
+                  disabled={!form.consent || isSubmitting}
                   disabled:opacity-40
                   md:w-auto
                   md:min-w-[330px]
                 "
               >
                 <span>
-                  Request a Partnership Discussion
-                </span>
+  {isSubmitting
+    ? "Submitting..."
+    : "Request a Partnership Discussion"}
+</span>
 
                 <span
                   className="

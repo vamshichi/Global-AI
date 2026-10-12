@@ -46,6 +46,8 @@ const initialForm = {
 export default function SpeakerNomination() {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+const [errorMessage, setErrorMessage] = useState("");
 
   const updateField = (
     field: keyof typeof initialForm,
@@ -57,16 +59,44 @@ export default function SpeakerNomination() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  e.preventDefault();
 
-    if (!form.consent) return;
+  if (!form.consent || isSubmitting) return;
 
-    // Connect your API here.
-    console.log("Speaker nomination:", form);
+  setIsSubmitting(true);
+  setErrorMessage("");
+
+  try {
+    const response = await fetch("/api/speaker-nomination", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message || "Failed to submit nomination."
+      );
+    }
 
     setSubmitted(true);
-  };
+  } catch (error) {
+    setErrorMessage(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again."
+    );
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   if (submitted) {
     return (
@@ -403,11 +433,17 @@ export default function SpeakerNomination() {
                   hover:bg-[#3E6BFF]
                   disabled:cursor-not-allowed
                   disabled:opacity-40
+                  disabled={!form.consent || isSubmitting}
                   md:w-auto
                   md:min-w-[300px]
                 "
               >
-                <span>Submit Speaker Nomination</span>
+                <span>
+  {isSubmitting
+    ? "Submitting..."
+    : "Submit Speaker Nomination"}
+</span>
+                
 
                 <span className="ml-8 transition-transform group-hover:translate-x-1">
                   →
