@@ -185,8 +185,8 @@ export async function POST(request: NextRequest) {
 
           <p style="margin-top:24px;color:#666">
             <strong>Event:</strong> Global AI GRCS Summit India 2026<br/>
-            <strong>Date:</strong> 10 December 2026<br/>
-            <strong>Venue:</strong> Courtyard by Marriott, Mumbai International Airport
+            <strong>Date:</strong> 21 JANUARY 2026<br/>
+            <strong>Venue:</strong>Mumbai India
           </p>
         </div>
       `,
@@ -211,8 +211,8 @@ export async function POST(request: NextRequest) {
 
           <div style="background:#f5f7ff;padding:20px;margin:24px 0">
             <p><strong>Event:</strong> Global AI GRCS Summit India 2026</p>
-            <p><strong>Date:</strong> 10 December 2026</p>
-            <p><strong>Venue:</strong> Courtyard by Marriott, Mumbai International Airport</p>
+            <p><strong>Date:</strong> 21 JANUARY 2026</p>
+            <p><strong>Venue:</strong>Mumbai India</p>
             <p><strong>Proposed Topic:</strong> ${safe(proposedTopic)}</p>
           </div>
 

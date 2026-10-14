@@ -103,8 +103,8 @@ Message:
 ${message.trim()}
 
 Event: Global AI GRCS Summit India 2026
-Date: 10 December 2026
-Venue: Courtyard by Marriott, Mumbai International Airport
+Date: 21 JANUARY 2026
+Venue: Mumbai India
       `.trim(),
       html: `
         <div style="font-family:Arial,sans-serif;color:#222;max-width:650px;margin:auto;line-height:1.6">
@@ -140,8 +140,8 @@ Venue: Courtyard by Marriott, Mumbai International Airport
 
           <p style="margin-top:24px;color:#666">
             <strong>Event:</strong> Global AI GRCS Summit India 2026<br/>
-            <strong>Date:</strong> 10 December 2026<br/>
-            <strong>Venue:</strong> Courtyard by Marriott, Mumbai International Airport
+            <strong>Date:</strong> 21 JANUARY 2026<br/>
+            <strong>Venue:</strong> Mumbai India
           </p>
         </div>
       `,
@@ -174,8 +174,8 @@ enquiry@confexmeet.com
 
           <div style="background:#f5f7ff;padding:20px;margin:24px 0">
             <p><strong>Event:</strong> Global AI GRCS Summit India 2026</p>
-            <p><strong>Date:</strong> 10 December 2026</p>
-            <p><strong>Venue:</strong> Courtyard by Marriott, Mumbai International Airport</p>
+            <p><strong>Date:</strong> 21 JANUARY 2026</p>
+            <p><strong>Venue:</strong>Mumbai India</p>
           </div>
 
           <p>Regards,<br/>

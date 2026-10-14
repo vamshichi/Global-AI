@@ -326,13 +326,12 @@ const [errorMessage, setErrorMessage] = useState("");
               </p>
 
               <p className="mt-2 text-sm text-ink">
-                10 December 2026
+                21 JANUARY 2026
               </p>
 
               <p className="mt-1 text-sm leading-6 text-ink-dim">
-                Courtyard by Marriott
-                <br />
-                Mumbai International Airport
+                
+                Mumbai India
               </p>
             </div>
 

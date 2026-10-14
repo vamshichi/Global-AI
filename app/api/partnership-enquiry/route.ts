@@ -163,8 +163,8 @@ Consent: Yes
 Submitted At: ${submittedAt}
 
 Event: Global AI GRCS Summit India 2026
-Date: 10 December 2026
-Venue: Courtyard by Marriott, Mumbai International Airport
+Date: 21 JANUARY 2026
+Venue: Mumbai India
       `.trim(),
       html: `
         <div style="font-family:Arial,sans-serif;color:#222;max-width:700px;margin:auto">
@@ -199,7 +199,7 @@ Venue: Courtyard by Marriott, Mumbai International Airport
           <hr/>
           <p style="color:#666;font-size:12px">
             Global AI GRCS Summit India 2026<br/>
-            10 December 2026 · Courtyard by Marriott, Mumbai International Airport
+            21 JANUARY 2026 · Mumbai India
           </p>
         </div>
       `,
@@ -218,8 +218,8 @@ Thank you for your interest in partnering with Global AI GRCS Summit India 2026.
 Our partnerships team will review your enquiry and contact you to discuss suitable opportunities.
 
 Event: Global AI GRCS Summit India 2026
-Date: 10 December 2026
-Venue: Courtyard by Marriott, Mumbai International Airport
+Date: 21 JANUARY 2026
+Venue: Mumbai India
 
 Regards,
 Summit Partnerships Team
@@ -233,8 +233,8 @@ Summit Partnerships Team
 
           <div style="background:#f5f7fb;padding:18px;border-radius:8px">
             <b>Event:</b> Global AI GRCS Summit India 2026<br/>
-            <b>Date:</b> 10 December 2026<br/>
-            <b>Venue:</b> Courtyard by Marriott, Mumbai International Airport
+            <b>Date:</b> 21 JANUARY 2026<br/>
+            <b>Venue:</b> Mumbai India
           </div>
 
           <p>Thank you for your interest. We look forward to connecting with you.</p>

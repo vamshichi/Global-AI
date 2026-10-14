@@ -271,7 +271,7 @@ export function Hero() {
               <p className="label-tag">Thursday</p>
 
               <p className="mt-1 text-base text-ink md:text-lg">
-                10 December 2026
+                21 JANUARY 2026
               </p>
             </div>
 
@@ -279,9 +279,8 @@ export function Hero() {
               <p className="label-tag">Venue</p>
 
               <p className="mt-1 text-base leading-snug text-ink md:text-lg">
-                Courtyard by Marriott
-                <br />
-                Mumbai International Airport
+               
+                Mumbai India
               </p>
             </div>
 

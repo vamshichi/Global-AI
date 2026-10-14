@@ -233,58 +233,56 @@ export function RegistrationSection() {
           </div>
 
           {/* CONTACT STRIP */}
-          <div
-            className="
-              mt-20
-              grid
-              gap-6
-              border-t
-              border-line
-              pt-10
-              sm:grid-cols-2
-              lg:grid-cols-5
-            "
-          >
-            <div className="flex items-center gap-3 text-ink-dim">
-              <Mail className="h-5 w-5 text-signal" />
+          
+<div
+  className="
+    mt-16
+    grid
+    grid-cols-1
+    gap-6
+    border-t
+    border-line
+    pt-8
+    sm:grid-cols-2
+    lg:grid-cols-[1fr_0.8fr_1.8fr]
+    lg:gap-10
+  "
+>
+  {/* Email */}
+  <a
+    href="mailto:info@globalbusinesssummits.com"
+    className="group flex min-w-0 items-start gap-3 text-ink-dim transition-colors hover:text-ink"
+  >
+    <Mail className="mt-0.5 h-5 w-5 shrink-0 text-signal" />
 
-              <span className="text-sm">
-                info@globalbusinesssummits.com
-              </span>
-            </div>
+    <span className="min-w-0 break-words text-sm leading-6">
+      info@globalbusinesssummits.com
+    </span>
+  </a>
 
-            <div className="flex items-center gap-3 text-ink-dim">
-              <Phone className="h-5 w-5 text-signal" />
+  {/* Phone */}
+  <a
+    href="tel:+919971645739"
+    className="group flex min-w-0 items-start gap-3 text-ink-dim transition-colors hover:text-ink"
+  >
+    <Phone className="mt-0.5 h-5 w-5 shrink-0 text-signal" />
 
-              <span className="text-sm">
-                Phone on request
-              </span>
-            </div>
+    <span className="text-sm leading-6">
+      +91 99716 45739
+    </span>
+  </a>
 
-            <div className="flex items-center gap-3 text-ink-dim">
-              <MapPin className="h-5 w-5 text-signal" />
+  {/* Address */}
+  <div className="flex min-w-0 items-start gap-3 text-ink-dim">
+    <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-signal" />
 
-              <span className="text-sm">
-                Mumbai, India
-              </span>
-            </div>
+    <span className="min-w-0 text-sm leading-6">
+      Balaji Arcade, 3rd Floor, 20th L Cross, 4th Block,
+      Koramangala, Bengaluru - 560095
+    </span>
+  </div>
+</div>
 
-            {/* <div className="flex items-center gap-3 text-ink-dim">
-              <Linkedin className="h-5 w-5 text-signal" />
-
-              <span className="text-sm">
-                LinkedIn
-              </span>
-            </div>
-
-            <div className="flex items-center gap-3 text-ink-dim">
-              <MessageCircle className="h-5 w-5 text-signal" />
-
-              <span className="text-sm">
-                WhatsApp Broadcast Sign-up
-              </span>
-            </div> */}
-          </div>
         </div>
       </section>
 

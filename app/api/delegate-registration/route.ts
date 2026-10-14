@@ -147,8 +147,8 @@ export async function POST(request: NextRequest) {
               .join("")}
           </table>
           <p style="margin-top:24px;color:#666">
-            Event: 10 December 2026<br/>
-            Venue: Courtyard by Marriott, Mumbai International Airport
+            Event: 21 JANUARY 2026<br/>
+            Venue: Mumbai India
           </p>
         </div>
       `,
@@ -166,9 +166,8 @@ export async function POST(request: NextRequest) {
           <strong>Global AI GRCS Summit India 2026</strong>.</p>
           <p>Our team will review your details and contact you regarding
           eligibility and the next steps.</p>
-          <p><strong>Date:</strong> 10 December 2026<br/>
-          <strong>Venue:</strong> Courtyard by Marriott,
-          Mumbai International Airport</p>
+          <p><strong>Date:</strong> 21 JANUARY 2026<br/>
+          <strong>Venue:</strong>Mumbai India</p>
           <p>We look forward to connecting with you.</p>
           <p>Regards,<br/>Global AI GRCS Summit Team</p>
         </div>

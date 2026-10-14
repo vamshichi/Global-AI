@@ -70,7 +70,7 @@ export function VenueSection() {
           >
             <Image
               src="/images/venue.webp"
-              alt="Courtyard by Marriott Mumbai International Airport"
+              alt="Mumbai India"
               fill
               priority
               className="
@@ -122,13 +122,13 @@ export function VenueSection() {
             <div>
 
               <p className="text-2xl font-medium text-ink">
-                Courtyard by Marriott, Mumbai International Airport
+                Mumbai India
               </p>
 
-              <p className="mt-2 text-ink-dim">
+              {/* <p className="mt-2 text-ink-dim">
                 Andheri East, Mumbai · 6 minutes from Chhatrapati
                 Shivaji International Airport
-              </p>
+              </p> */}
 
               {/* DETAILS */}
               <div
@@ -150,7 +150,7 @@ export function VenueSection() {
                   </p>
 
                   <p className="mt-2 text-ink">
-                    Thursday, 10 December 2026
+                    Thursday, 21 JANUARY 2026
                   </p>
 
                   <p className="text-ink-dim">
