@@ -150,7 +150,7 @@ export function VenueSection() {
                   </p>
 
                   <p className="mt-2 text-ink">
-                    Thursday, 21 JANUARY 2026
+                    Thursday, 21 JANUARY 2027
                   </p>
 
                   <p className="text-ink-dim">

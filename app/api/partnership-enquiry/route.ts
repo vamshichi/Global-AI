@@ -163,7 +163,7 @@ Consent: Yes
 Submitted At: ${submittedAt}
 
 Event: Global AI GRCS Summit India 2026
-Date: 21 JANUARY 2026
+Date: 21 JANUARY 2027
 Venue: Mumbai India
       `.trim(),
       html: `
@@ -199,7 +199,7 @@ Venue: Mumbai India
           <hr/>
           <p style="color:#666;font-size:12px">
             Global AI GRCS Summit India 2026<br/>
-            21 JANUARY 2026 · Mumbai India
+            21 JANUARY 2027 · Mumbai India
           </p>
         </div>
       `,
@@ -218,7 +218,7 @@ Thank you for your interest in partnering with Global AI GRCS Summit India 2026.
 Our partnerships team will review your enquiry and contact you to discuss suitable opportunities.
 
 Event: Global AI GRCS Summit India 2026
-Date: 21 JANUARY 2026
+Date: 21 JANUARY 2027
 Venue: Mumbai India
 
 Regards,
@@ -233,7 +233,7 @@ Summit Partnerships Team
 
           <div style="background:#f5f7fb;padding:18px;border-radius:8px">
             <b>Event:</b> Global AI GRCS Summit India 2026<br/>
-            <b>Date:</b> 21 JANUARY 2026<br/>
+            <b>Date:</b> 21 JANUARY 2027<br/>
             <b>Venue:</b> Mumbai India
           </div>
 

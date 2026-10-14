@@ -310,7 +310,7 @@ export default function PartnershipEnquiry() {
               </p>
 
               <p className="mt-2 text-sm text-ink">
-                21 JANUARY 2026
+                21 JANUARY 2027
               </p>
 
               <p className="mt-1 text-sm text-ink-dim">

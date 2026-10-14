@@ -271,7 +271,7 @@ export function Hero() {
               <p className="label-tag">Thursday</p>
 
               <p className="mt-1 text-base text-ink md:text-lg">
-                21 JANUARY 2026
+                21 JANUARY 2027
               </p>
             </div>
 
