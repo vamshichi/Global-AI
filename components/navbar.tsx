@@ -154,14 +154,14 @@ export function Navbar() {
           <div className="hidden items-center gap-3 lg:flex">
 
             {/* PARTNERSHIP */}
-            <Button
+            {/* <Button
               type="button"
               variant="secondary"
               onClick={openPartnership}
               className="px-5 py-2.5 text-xs"
             >
               Partner With Us
-            </Button>
+            </Button> */}
 
             {/* CONTACT */}
             <Button
@@ -242,14 +242,14 @@ export function Navbar() {
                 <div className="mt-4 flex flex-col gap-3">
 
                   {/* MOBILE PARTNERSHIP */}
-                  <Button
+                  {/* <Button
                     type="button"
                     variant="secondary"
                     onClick={openPartnership}
                     className="w-full"
                   >
                     Partner With Us
-                  </Button>
+                  </Button> */}
 
                   {/* MOBILE CONTACT */}
                   <Button

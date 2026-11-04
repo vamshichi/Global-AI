@@ -305,12 +305,12 @@ export function Hero() {
               Reserve Your Seat
             </Button>
 
-            <Button
+            {/* <Button
               href="#partners"
               variant="secondary"
             >
               Become a Founding Partner
-            </Button>
+            </Button> */}
           </motion.div>
         </motion.div>
       </div>
