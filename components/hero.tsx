@@ -1,5 +1,7 @@
+
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -35,7 +37,7 @@ export function Hero() {
   const [phase, setPhase] = useState<"line1" | "line2" | "done">("line1");
 
   useEffect(() => {
-    let timeout: NodeJS.Timeout;
+    let timeout: ReturnType<typeof setTimeout>;
 
     if (phase === "line1") {
       if (typedLine1.length < line1.length) {
@@ -69,6 +71,7 @@ export function Hero() {
       id="home"
       className="
         relative
+        isolate
         h-screen
         min-h-[700px]
         max-h-screen
@@ -78,14 +81,38 @@ export function Hero() {
         pb-10
       "
     >
-      {/* BACKDROP */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 field-grid opacity-40" />
+      {/* BACKGROUND CONFERENCE IMAGE */}
+      <div className="absolute inset-0 -z-20">
+        <Image
+          src="/images/hero-conference.png"
+          alt="Premium technology conference with audience and stage lighting"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      </div>
 
-        <div className="absolute inset-0 bg-gradient-to-b from-void/10 via-void/60 to-void" />
+      {/* DARK CINEMATIC OVERLAY */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        {/* Main dark overlay */}
+        <div className="absolute inset-0 bg-[#050B16]/65" />
 
+        {/* Left-side gradient for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#050B16]/95 via-[#050B16]/75 to-[#050B16]/20" />
+
+        {/* Bottom gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050B16]/30 via-transparent to-void" />
+
+        {/* Blue cinematic glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_40%,rgba(30,100,255,0.18),transparent_55%)]" />
+
+        {/* Grid */}
+        <div className="absolute inset-0 field-grid opacity-20" />
+
+        {/* Animated decorative trails */}
         <svg
-          className="absolute right-0 top-0 h-full w-full opacity-70 md:w-2/3"
+          className="absolute right-0 top-0 h-full w-full opacity-40 md:w-2/3"
           viewBox="0 0 900 900"
           fill="none"
           aria-hidden="true"
@@ -93,21 +120,9 @@ export function Hero() {
         >
           <defs>
             <linearGradient id="trail" x1="0" y1="0" x2="1" y2="1">
-              <stop
-                offset="0%"
-                stopColor="#3E6BFF"
-                stopOpacity="0"
-              />
-              <stop
-                offset="50%"
-                stopColor="#3E6BFF"
-                stopOpacity="0.9"
-              />
-              <stop
-                offset="100%"
-                stopColor="#3E6BFF"
-                stopOpacity="0"
-              />
+              <stop offset="0%" stopColor="#3E6BFF" stopOpacity="0" />
+              <stop offset="50%" stopColor="#3E6BFF" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="#3E6BFF" stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -121,14 +136,8 @@ export function Hero() {
               }, ${760 - i * 20} ${60 + i * 30}`}
               stroke="url(#trail)"
               strokeWidth="1"
-              initial={{
-                pathLength: 0,
-                opacity: 0,
-              }}
-              animate={{
-                pathLength: 1,
-                opacity: 1,
-              }}
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
               transition={{
                 duration: 2.4,
                 delay: 0.3 + i * 0.12,
@@ -169,10 +178,7 @@ export function Hero() {
           className="w-full"
         >
           {/* LABEL */}
-          <motion.p
-            variants={item}
-            className="label-tag"
-          >
+          <motion.p variants={item} className="label-tag">
             Global AI GRCS Summit India 2026
           </motion.p>
 
@@ -183,7 +189,7 @@ export function Hero() {
               mt-4
               max-w-5xl
               text-display
-              font-sm
+              font-medium
               leading-[0.95]
               text-ink
             "
@@ -206,9 +212,7 @@ export function Hero() {
                   translate-y-[0.05em]
                   bg-signal
                 "
-                animate={{
-                  opacity: [1, 0, 1],
-                }}
+                animate={{ opacity: [1, 0, 1] }}
                 transition={{
                   duration: 0.8,
                   repeat: Infinity,
@@ -269,7 +273,6 @@ export function Hero() {
           >
             <div>
               <p className="label-tag">Thursday</p>
-
               <p className="mt-1 text-base text-ink md:text-lg">
                 21 JANUARY 2027
               </p>
@@ -277,40 +280,24 @@ export function Hero() {
 
             <div>
               <p className="label-tag">Venue</p>
-
               <p className="mt-1 text-base leading-snug text-ink md:text-lg">
-               
                 Mumbai India
               </p>
             </div>
 
             <div>
               <p className="label-tag">200&ndash;250 Seats</p>
-
               <p className="mt-1 text-base text-ink md:text-lg">
                 Curated. Not crowded.
               </p>
             </div>
           </motion.div>
 
-          {/* BUTTONS */}
-          <motion.div
-            variants={item}
-            className="mt-8 flex flex-wrap gap-3"
-          >
-            <Button
-              href="#registration"
-              variant="primary"
-            >
+          {/* BUTTON */}
+          <motion.div variants={item} className="mt-8 flex flex-wrap gap-3">
+            <Button href="#registration" variant="primary">
               Reserve Your Seat
             </Button>
-
-            {/* <Button
-              href="#partners"
-              variant="secondary"
-            >
-              Become a Founding Partner
-            </Button> */}
           </motion.div>
         </motion.div>
       </div>
