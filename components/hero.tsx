@@ -179,7 +179,7 @@ export function Hero() {
         >
           {/* LABEL */}
           <motion.p variants={item} className="label-tag">
-            Global AI GRCS Summit India 2026
+            Global AI GRCS Summit India 2027
           </motion.p>
 
           {/* TYPEWRITER HEADING */}
