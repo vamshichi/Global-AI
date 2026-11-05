@@ -2,90 +2,38 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const container = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.09,
-      delayChildren: 0.15,
-    },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 26 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: [0.16, 1, 0.3, 1],
-    },
-  },
-};
-
 export function Hero() {
-  const line1 = "From AI Adoption";
-  const line2 = "to AI Accountability.";
+  const reduceMotion = useReducedMotion();
 
-  const [typedLine1, setTypedLine1] = useState("");
-  const [typedLine2, setTypedLine2] = useState("");
-  const [phase, setPhase] = useState<"line1" | "line2" | "done">("line1");
-
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-
-    if (phase === "line1") {
-      if (typedLine1.length < line1.length) {
-        timeout = setTimeout(() => {
-          setTypedLine1(line1.slice(0, typedLine1.length + 1));
-        }, 55);
-      } else {
-        timeout = setTimeout(() => {
-          setPhase("line2");
-        }, 350);
-      }
-    }
-
-    if (phase === "line2") {
-      if (typedLine2.length < line2.length) {
-        timeout = setTimeout(() => {
-          setTypedLine2(line2.slice(0, typedLine2.length + 1));
-        }, 55);
-      } else {
-        timeout = setTimeout(() => {
-          setPhase("done");
-        }, 500);
-      }
-    }
-
-    return () => clearTimeout(timeout);
-  }, [typedLine1, typedLine2, phase]);
+  const reveal = {
+    hidden: {
+      opacity: 0,
+      y: reduceMotion ? 0 : 24,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: reduceMotion ? 0 : 0.8,
+        ease: [0.22, 1, 0.36, 1] as const,
+      },
+    },
+  };
 
   return (
     <section
       id="home"
-      className="
-        relative
-        isolate
-        h-screen
-        min-h-[700px]
-        max-h-screen
-        overflow-hidden
-        bg-void
-        pt-24
-        pb-10
-      "
+      className="relative isolate flex min-h-[720px] overflow-hidden bg-[#07070A] text-white md:min-h-[calc(100svh-20px)]"
     >
-      {/* BACKGROUND CONFERENCE IMAGE */}
-      <div className="absolute inset-0 -z-20">
+      {/* Background image */}
+      <div className="absolute inset-0 -z-30">
         <Image
           src="/images/hero-conference.png"
-          alt="Premium technology conference with audience and stage lighting"
+          alt="Technology and business leaders gathered at a conference"
           fill
           priority
           sizes="100vw"
@@ -93,213 +41,130 @@ export function Hero() {
         />
       </div>
 
-      {/* DARK CINEMATIC OVERLAY */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        {/* Main dark overlay */}
-        <div className="absolute inset-0 bg-[#050B16]/65" />
+      {/* Cinematic image treatment */}
+      <div className="absolute inset-0 -z-20 bg-black/45" />
 
-        {/* Left-side gradient for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#050B16]/95 via-[#050B16]/75 to-[#050B16]/20" />
+      <div className="absolute inset-0 -z-20 bg-gradient-to-b from-black/60 via-black/15 to-[#090510]" />
 
-        {/* Bottom gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050B16]/30 via-transparent to-void" />
+      <div className="absolute inset-0 -z-20 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
 
-        {/* Blue cinematic glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_40%,rgba(30,100,255,0.18),transparent_55%)]" />
+      {/* Subtle bottom color atmosphere */}
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-[45%] bg-gradient-to-t from-[#10081E]/95 via-[#10081E]/60 to-transparent" />
 
-        {/* Grid */}
-        <div className="absolute inset-0 field-grid opacity-20" />
-
-        {/* Animated decorative trails */}
-        <svg
-          className="absolute right-0 top-0 h-full w-full opacity-40 md:w-2/3"
-          viewBox="0 0 900 900"
-          fill="none"
-          aria-hidden="true"
-          preserveAspectRatio="xMidYMid slice"
-        >
-          <defs>
-            <linearGradient id="trail" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#3E6BFF" stopOpacity="0" />
-              <stop offset="50%" stopColor="#3E6BFF" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="#3E6BFF" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-
-          {Array.from({ length: 7 }).map((_, i) => (
-            <motion.path
-              key={i}
-              d={`M ${80 + i * 40} 900 C ${
-                260 + i * 30
-              } ${640 - i * 20}, ${420 + i * 10} ${
-                420 - i * 10
-              }, ${760 - i * 20} ${60 + i * 30}`}
-              stroke="url(#trail)"
-              strokeWidth="1"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{
-                duration: 2.4,
-                delay: 0.3 + i * 0.12,
-                ease: "easeOut",
-              }}
-            />
-          ))}
-
-          {Array.from({ length: 30 }).map((_, i) => (
-            <circle
-              key={`n-${i}`}
-              cx={100 + ((i * 53) % 800)}
-              cy={100 + ((i * 97) % 800)}
-              r={i % 5 === 0 ? 2 : 1}
-              fill="#F3F1EA"
-              opacity={0.15}
-            />
-          ))}
-        </svg>
-      </div>
-
-      {/* CONTENT */}
-      <div
-        className="
-          container-edge
-          relative
-          z-10
-          pt-10
-          flex
-          h-full
-          items-center
-        "
-      >
-        <motion.div
-          variants={container}
-          initial="hidden"
-          animate="show"
-          className="w-full"
-        >
-          {/* LABEL */}
-          <motion.p variants={item} className="label-tag">
-            Global AI GRCS Summit India 2027
-          </motion.p>
-
-          {/* TYPEWRITER HEADING */}
-          <motion.h1
-            variants={item}
-            className="
-              mt-4
-              max-w-5xl
-              text-display
-              font-medium
-              leading-[0.95]
-              text-ink
-            "
-            aria-label="From AI Adoption to AI Accountability."
+      {/* Content */}
+      <div className="container-edge relative flex w-full flex-col justify-end pb-8 pt-32 sm:pb-12 md:pb-14">
+        <div className="max-w-[1400px]">
+          {/* Event eyebrow */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="mb-5 flex items-center gap-3"
           >
-            <span>{typedLine1}</span>
+            <span className="h-px w-6 bg-blue-400" />
+
+            <p className="text-xs font-medium tracking-wide text-white/85 sm:text-sm">
+              AI GRCS Summit India · 2027
+            </p>
+          </motion.div>
+
+          {/* Main headline */}
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="max-w-[1200px] text-[clamp(3.2rem,9.5vw,6rem)] font-medium leading-[0.86] tracking-[-0.075em]"
+          >
+            The Future of AI
             <br />
 
-            <span>{typedLine2}</span>
+            <span className="text-white/90">
+              Demands{" "}
+            </span>
 
-            {/* CURSOR */}
-            {phase !== "done" && (
-              <motion.span
-                aria-hidden="true"
-                className="
-                  ml-2
-                  inline-block
-                  h-[0.8em]
-                  w-[3px]
-                  translate-y-[0.05em]
-                  bg-signal
-                "
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{
-                  duration: 0.8,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              />
-            )}
+            <span className="bg-gradient-to-r from-white via-[#E5DDFD] to-[#B8A0FF] bg-clip-text text-transparent">
+              Accountability.
+            </span>
           </motion.h1>
 
-          {/* QUOTE */}
-          <motion.p
-            variants={item}
-            className="
-              mt-6
-              max-w-xl
-              font-serif
-              text-xl
-              italic
-              leading-relaxed
-              text-ink/90
-              md:text-2xl
-            "
-          >
-            &ldquo;The AI you deployed yesterday is being judged today.&rdquo;
-          </motion.p>
-
-          {/* DESCRIPTION */}
-          <motion.p
-            variants={item}
-            className="
-              mt-3
-              max-w-xl
-              text-base
-              leading-relaxed
-              text-ink-dim
-              md:text-lg
-            "
-          >
-            One day. One room. Every regulator, risk officer and board that
-            matters.
-          </motion.p>
-
-          {/* EVENT DETAILS */}
+          {/* Bottom information row */}
           <motion.div
-            variants={item}
-            className="
-              mt-8
-              grid
-              max-w-4xl
-              grid-cols-2
-              gap-x-8
-              gap-y-5
-              border-t
-              border-line
-              pt-6
-              sm:grid-cols-3
-            "
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="mt-8 grid gap-8 border-t border-white/20 pt-5 sm:mt-10 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.2fr_auto] lg:items-end"
           >
+            {/* Date */}
             <div>
-              <p className="label-tag">Thursday</p>
-              <p className="mt-1 text-base text-ink md:text-lg">
-                21 JANUARY 2027
+              <p className="text-[10px] uppercase tracking-[0.18em] text-white/45">
+                Date
+              </p>
+
+              <p className="mt-2 text-sm font-medium text-white/90">
+                21 January
+              </p>
+
+              <p className="text-sm text-white/65">2027</p>
+            </div>
+
+            {/* Location */}
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.18em] text-white/45">
+                Location
+              </p>
+
+              <p className="mt-2 text-sm font-medium text-white/90">
+                Mumbai, India
+              </p>
+
+              <p className="text-sm text-white/65">
+                Venue announcement coming soon
               </p>
             </div>
 
-            <div>
-              <p className="label-tag">Venue</p>
-              <p className="mt-1 text-base leading-snug text-ink md:text-lg">
-                Mumbai India
+            {/* Description */}
+            <div className="max-w-sm">
+              <p className="text-sm leading-6 text-white/70">
+                A gathering of leaders shaping the future of AI governance,
+                risk, compliance and security.
               </p>
             </div>
 
-            <div>
-              <p className="label-tag">200&ndash;250 Seats</p>
-              <p className="mt-1 text-base text-ink md:text-lg">
-                Curated. Not crowded.
-              </p>
+            {/* CTA */}
+            <div className="flex flex-col gap-3 sm:items-start lg:items-end">
+              <Button
+                href="#registration"
+                variant="primary"
+                className="group flex h-12 w-full items-center justify-between rounded-sm bg-[#8650F5] px-5 text-sm font-medium text-white transition-all hover:bg-[#996BFF] sm:w-auto sm:min-w-[190px]"
+              >
+                Register Your Interest
+
+                <ArrowUpRight
+                  size={17}
+                  className="ml-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"
+                />
+              </Button>
+
+              <a
+                href="#agenda"
+                className="text-xs text-white/50 transition-colors hover:text-white"
+              >
+                Explore the summit →
+              </a>
             </div>
           </motion.div>
+        </div>
 
-          {/* BUTTON */}
-          <motion.div variants={item} className="mt-8 flex flex-wrap gap-3">
-            <Button href="#registration" variant="primary">
-              Reserve Your Seat
-            </Button>
-          </motion.div>
-        </motion.div>
+        {/* Bottom signature */}
+        <div className="mt-10 hidden items-center justify-between border-t border-white/10 pt-4 md:flex">
+          <p className="text-[9px] uppercase tracking-[0.22em] text-white/35">
+            Governance · Risk · Compliance · Security
+          </p>
+
+          <p className="text-[9px] uppercase tracking-[0.22em] text-white/35">
+            Mumbai, India
+          </p>
+        </div>
       </div>
     </section>
   );

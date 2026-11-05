@@ -1,10 +1,19 @@
+
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+} from "framer-motion";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Play,
+  Pause,
+} from "lucide-react";
 import { stormTimeline } from "@/data/storm";
-import { SectionHeader } from "@/components/section-header";
-import { ArrowDownRight, ArrowRight, Play, Pause } from "lucide-react";
 
 export function StormTimeline() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -13,138 +22,188 @@ export function StormTimeline() {
 
   const activeEntry = stormTimeline[activeIndex];
 
+  const selectMilestone = (index: number) => {
+    setActiveIndex(index);
+  };
+
+  const nextMilestone = () => {
+    setActiveIndex((index) => (index + 1) % stormTimeline.length);
+  };
+
+  const previousMilestone = () => {
+    setActiveIndex((index) =>
+      index === 0 ? stormTimeline.length - 1 : index - 1
+    );
+  };
+
   return (
     <section
       id="storm-timeline"
-      className="relative overflow-hidden border-t border-white/[0.08] bg-[#080D18] py-24 text-white lg:py-36"
+      className="relative overflow-hidden bg-[#FAFAF8] py-24 text-[#111827] md:py-32 lg:py-40"
     >
-      {/* Ambient background */}
+      {/* Subtle background texture */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -left-40 top-20 h-96 w-96 rounded-full bg-blue-500/[0.07] blur-[120px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-40 bottom-0 h-96 w-96 rounded-full bg-cyan-400/[0.05] blur-[120px]"
+        className="pointer-events-none absolute right-0 top-0 h-[500px] w-[500px] rounded-full bg-blue-100/40 blur-[130px]"
       />
 
       <div className="container-edge relative z-10">
-        <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
+
+        {/* SECTION HEADER */}
+        <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-end">
+
           <div>
-            <SectionHeader
-              eyebrow="The 90-Day Storm"
-              headline="You are standing inside India's most consequential AI-regulation window."
-            />
+            <motion.div
+              initial={reduceMotion ? false : { opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-7 flex items-center gap-3"
+            >
+              <span className="h-[2px] w-8 bg-blue-600" />
+
+              <span className="text-[11px] font-semibold uppercase tracking-[0.24em] text-blue-600">
+                The 90-Day Storm
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={reduceMotion ? false : { opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="max-w-5xl text-4xl font-medium leading-[1.08] tracking-[-0.045em] sm:text-5xl md:text-6xl lg:text-[76px]"
+            >
+              The future of AI
+              <br className="hidden sm:block" />
+
+              <span className="text-[#9CA3AF]">
+                {" "}is being decided.
+              </span>
+            </motion.h2>
+
+            <p className="mt-6 max-w-xl text-base leading-7 text-[#6B7280] md:text-lg">
+              India is entering a defining regulatory window.
+              The decisions made now will shape how AI is built,
+              governed and trusted.
+            </p>
           </div>
 
-          <div className="flex items-center gap-3 pb-1 text-xs uppercase tracking-[0.2em] text-white/40">
-            <span className="h-px w-8 bg-signal" />
-            {String(activeIndex + 1).padStart(2, "0")} /{" "}
-            {String(stormTimeline.length).padStart(2, "0")}
-            <span>Milestones</span>
+          {/* MILESTONE COUNTER */}
+          <div className="flex items-center gap-4 border-t border-[#E5E7EB] pt-5 lg:justify-end lg:border-t-0 lg:pt-0">
+            <span className="text-5xl font-light tracking-tight text-[#111827]">
+              {String(activeIndex + 1).padStart(2, "0")}
+            </span>
+
+            <div className="h-10 w-px bg-[#D1D5DB]" />
+
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.15em] text-[#9CA3AF]">
+                Of
+              </p>
+
+              <p className="mt-1 text-sm font-medium text-[#111827]">
+                {String(stormTimeline.length).padStart(2, "0")} milestones
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="mt-16 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 xl:gap-20">
-          {/* LEFT: Interactive timeline */}
+        {/* MAIN CONTENT */}
+        <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
+
+          {/* LEFT TIMELINE */}
           <div>
-            <div className="relative border-t border-white/10">
-              {/* Animated progress line */}
+            <div className="relative border-t border-[#DDE1E7]">
+
+              {/* Progress */}
               <motion.div
-                aria-hidden="true"
-                className="absolute left-0 top-[-1px] h-px bg-signal"
+                className="absolute left-0 top-[-1px] h-[2px] bg-blue-600"
                 initial={false}
                 animate={{
                   width: `${((activeIndex + 1) / stormTimeline.length) * 100}%`,
                 }}
                 transition={{
-                  duration: reduceMotion ? 0 : 0.6,
+                  duration: reduceMotion ? 0 : 0.5,
                   ease: [0.16, 1, 0.3, 1],
                 }}
               />
 
-              {stormTimeline.map((entry, i) => {
-                const active = i === activeIndex;
-                const completed = i < activeIndex;
+              {stormTimeline.map((entry, index) => {
+                const active = index === activeIndex;
+                const completed = index < activeIndex;
 
                 return (
                   <motion.button
                     key={entry.date}
                     type="button"
-                    onClick={() => setActiveIndex(i)}
+                    onClick={() => selectMilestone(index)}
                     aria-pressed={active}
-                    initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                    initial={reduceMotion ? false : { opacity: 0, y: 15 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
+                    viewport={{ once: true }}
                     transition={{
                       duration: reduceMotion ? 0 : 0.45,
-                      delay: reduceMotion ? 0 : i * 0.06,
+                      delay: reduceMotion ? 0 : index * 0.05,
                     }}
-                    className={`group relative grid w-full grid-cols-[36px_1fr] gap-4 border-b border-white/[0.08] py-6 text-left transition-colors duration-300 sm:grid-cols-[44px_1fr] sm:gap-5 ${
-                      active ? "bg-white/[0.035]" : "hover:bg-white/[0.02]"
+                    className={`group relative grid w-full grid-cols-[42px_1fr] gap-4 border-b border-[#E5E7EB] py-6 text-left transition-all duration-300 sm:grid-cols-[52px_1fr] sm:gap-5 ${
+                      active
+                        ? "bg-white"
+                        : "hover:bg-white/70"
                     }`}
                   >
-                    {/* Milestone marker */}
-                    <div className="flex justify-center pt-1">
+                    {/* Number */}
+                    <div className="flex items-start justify-center pt-1">
                       <span
-                        className={`relative flex h-7 w-7 items-center justify-center rounded-full border transition-all duration-300 ${
+                        className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium transition-all duration-300 ${
                           active
-                            ? "border-signal bg-signal/10"
+                            ? "bg-blue-600 text-white"
                             : completed
-                              ? "border-signal/50 bg-signal/5"
-                              : "border-white/15 bg-transparent group-hover:border-white/40"
+                              ? "bg-blue-50 text-blue-600"
+                              : "bg-[#F0F1F2] text-[#9CA3AF] group-hover:bg-blue-50 group-hover:text-blue-600"
                         }`}
                       >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full transition-all ${
-                            active
-                              ? "scale-125 bg-signal"
-                              : completed
-                                ? "bg-signal/70"
-                                : "bg-white/30 group-hover:bg-white/60"
-                          }`}
-                        />
-                        {active && (
-                          <motion.span
-                            aria-hidden="true"
-                            className="absolute inset-[-5px] rounded-full border border-signal/30"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                          />
-                        )}
+                        {String(index + 1).padStart(2, "0")}
                       </span>
                     </div>
 
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center justify-between gap-3">
+                    {/* Content */}
+                    <div className="min-w-0 pr-3">
+                      <div className="flex items-center justify-between gap-3">
                         <span
-                          className={`text-[10px] font-semibold uppercase tracking-[0.22em] transition-colors sm:text-xs ${
-                            active ? "text-signal" : "text-white/40"
+                          className={`text-[10px] font-semibold uppercase tracking-[0.18em] sm:text-xs ${
+                            active
+                              ? "text-blue-600"
+                              : "text-[#9CA3AF]"
                           }`}
                         >
                           {entry.tag}
                         </span>
 
-                        <span
-                          className={`text-xs transition-colors ${
-                            active ? "text-white/80" : "text-white/30"
+                        <ArrowUpRight
+                          size={15}
+                          className={`shrink-0 transition-all duration-300 ${
+                            active
+                              ? "translate-x-0 text-blue-600 opacity-100"
+                              : "-translate-x-1 text-[#9CA3AF] opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                           }`}
-                        >
-                          {String(i + 1).padStart(2, "0")}
-                        </span>
+                        />
                       </div>
 
                       <h3
                         className={`mt-3 text-lg font-medium tracking-tight transition-colors sm:text-xl ${
-                          active ? "text-white" : "text-white/65 group-hover:text-white"
+                          active
+                            ? "text-[#111827]"
+                            : "text-[#6B7280] group-hover:text-[#111827]"
                         }`}
                       >
                         {entry.date}
                       </h3>
 
                       <p
-                        className={`mt-2 max-w-lg text-sm leading-7 transition-colors ${
-                          active ? "text-white/70" : "text-white/40"
+                        className={`mt-2 text-sm leading-6 transition-colors ${
+                          active
+                            ? "text-[#6B7280]"
+                            : "text-[#9CA3AF] group-hover:text-[#6B7280]"
                         }`}
                       >
                         {entry.headline}
@@ -156,15 +215,12 @@ export function StormTimeline() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
-                            transition={{
-                              duration: reduceMotion ? 0 : 0.3,
-                            }}
+                            transition={{ duration: 0.25 }}
                             className="overflow-hidden"
                           >
-                            <div className="flex items-center gap-2 pt-4 text-xs font-medium uppercase tracking-[0.16em] text-signal">
-                              <span>Selected milestone</span>
-                              <ArrowRight size={13} />
-                            </div>
+                            <p className="pt-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-blue-600">
+                              Explore this milestone →
+                            </p>
                           </motion.div>
                         )}
                       </AnimatePresence>
@@ -174,37 +230,27 @@ export function StormTimeline() {
               })}
             </div>
 
-            <div className="mt-6 flex items-center justify-between gap-4">
-              <p className="text-xs leading-5 text-white/35">
-                Select a milestone to explore the timeline.
+            {/* TIMELINE CONTROLS */}
+            <div className="mt-6 flex items-center justify-between">
+              <p className="text-xs text-[#9CA3AF]">
+                Explore the regulatory timeline
               </p>
 
               <div className="flex gap-2">
                 <button
                   type="button"
                   aria-label="Previous milestone"
-                  onClick={() =>
-                    setActiveIndex((i) =>
-                      i === 0 ? stormTimeline.length - 1 : i - 1
-                    )
-                  }
-                  className="flex h-10 w-10 items-center justify-center border border-white/10 text-white/60 transition hover:border-signal/50 hover:text-signal"
+                  onClick={previousMilestone}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#DDE1E7] text-[#6B7280] transition hover:border-blue-600 hover:bg-blue-600 hover:text-white"
                 >
-                  <ArrowDownRight
-                    size={16}
-                    className="rotate-45"
-                  />
+                  <ArrowRight size={16} className="rotate-180" />
                 </button>
 
                 <button
                   type="button"
                   aria-label="Next milestone"
-                  onClick={() =>
-                    setActiveIndex((i) =>
-                      (i + 1) % stormTimeline.length
-                    )
-                  }
-                  className="flex h-10 w-10 items-center justify-center border border-white/10 text-white/60 transition hover:border-signal/50 hover:text-signal"
+                  onClick={nextMilestone}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-[#DDE1E7] text-[#6B7280] transition hover:border-blue-600 hover:bg-blue-600 hover:text-white"
                 >
                   <ArrowRight size={16} />
                 </button>
@@ -212,21 +258,20 @@ export function StormTimeline() {
             </div>
           </div>
 
-          {/* RIGHT: Cinematic video */}
+          {/* RIGHT VIDEO PANEL */}
           <motion.div
-            initial={reduceMotion ? false : { opacity: 0, x: 24 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={reduceMotion ? false : { opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{
-              duration: reduceMotion ? 0 : 0.8,
-              ease: [0.16, 1, 0.3, 1],
-            }}
-            className="lg:sticky lg:top-24 lg:self-start"
+            transition={{ duration: 0.8 }}
+            className="lg:sticky lg:top-28 lg:self-start"
           >
-            <div className="group relative aspect-[4/5] overflow-hidden border border-white/10 bg-[#0D1421] sm:aspect-video lg:aspect-[4/5] xl:aspect-[4/4.5]">
+            <div className="relative overflow-hidden rounded-sm bg-[#111827]">
+
+              {/* Video */}
               <video
                 key="/videos/storm.mp4"
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.025]"
+                className="aspect-[4/5] w-full object-cover sm:aspect-video lg:aspect-[4/5]"
                 autoPlay
                 muted
                 loop
@@ -239,54 +284,40 @@ export function StormTimeline() {
                 <source src="/videos/storm.mp4" type="video/mp4" />
               </video>
 
-              {/* Layered cinematic treatment */}
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#080D18]/40 via-transparent to-[#080D18]/95"
-              />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#080D18]/20 to-transparent"
-              />
+              {/* Video overlay */}
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/80" />
 
-              {/* Top metadata */}
-              <div className="absolute inset-x-0 top-0 flex items-center justify-between p-5 sm:p-7">
-                <div className="flex items-center gap-2.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal/60" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-signal" />
-                  </span>
-                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/80">
-                    The Regulatory Window
-                  </span>
-                </div>
+              {/* Top label */}
+              <div className="absolute left-5 right-5 top-5 flex items-center justify-between sm:left-7 sm:right-7 sm:top-7">
+                <span className="rounded-full border border-white/30 bg-black/20 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.18em] text-white backdrop-blur-md">
+                  The Regulatory Window
+                </span>
 
-                <span className="border border-white/20 px-3 py-1.5 text-[10px] uppercase tracking-widest text-white/60">
-                  90 Days
+                <span className="text-xs text-white/70">
+                  90 DAYS
                 </span>
               </div>
 
-              {/* Selected milestone overlay */}
-              <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-9">
+              {/* Bottom content */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeEntry.date}
-                    initial={{ opacity: 0, y: 14 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
-                    transition={{
-                      duration: reduceMotion ? 0 : 0.35,
-                    }}
+                    transition={{ duration: 0.3 }}
                   >
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-signal">
+                    <span className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
                       {activeEntry.tag}
-                    </p>
+                    </span>
 
-                    <h3 className="mt-4 max-w-md font-serif text-3xl leading-tight tracking-tight text-white sm:text-4xl">
+                    <h3 className="mt-4 max-w-lg text-3xl font-medium leading-tight tracking-tight text-white sm:text-4xl">
                       {activeEntry.date}
                     </h3>
 
-                    <p className="mt-4 max-w-md text-sm leading-7 text-white/65">
+                    <p className="mt-4 max-w-md text-sm leading-7 text-white/70">
                       {activeEntry.headline}
                     </p>
                   </motion.div>
@@ -294,10 +325,11 @@ export function StormTimeline() {
 
                 <div className="mt-7 flex items-center justify-between border-t border-white/20 pt-5">
                   <div>
-                    <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
+                    <p className="text-[10px] uppercase tracking-[0.18em] text-white/50">
                       The bigger picture
                     </p>
-                    <p className="mt-2 text-sm text-white/80">
+
+                    <p className="mt-2 text-sm text-white">
                       India's AI future is being shaped now.
                     </p>
                   </div>
@@ -307,7 +339,7 @@ export function StormTimeline() {
                     aria-label={isPlaying ? "Pause video" : "Play video"}
                     onClick={(event) => {
                       const video = event.currentTarget
-                        .closest(".group")
+                        .closest(".relative")
                         ?.querySelector("video");
 
                       if (!(video instanceof HTMLVideoElement)) return;
@@ -318,50 +350,59 @@ export function StormTimeline() {
                         video.pause();
                       }
                     }}
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/30 bg-black/20 text-white backdrop-blur-sm transition hover:border-signal hover:text-signal"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/40 text-white transition hover:bg-white hover:text-black"
                   >
                     {isPlaying ? (
-                      <Pause size={17} />
+                      <Pause size={16} />
                     ) : (
-                      <Play size={17} className="ml-0.5" />
+                      <Play size={16} />
                     )}
                   </button>
                 </div>
               </div>
-
-              {/* Fine corner details */}
-              <div className="pointer-events-none absolute left-4 top-4 h-7 w-7 border-l border-t border-signal/70" />
-              <div className="pointer-events-none absolute right-4 top-4 h-7 w-7 border-r border-t border-signal/70" />
-              <div className="pointer-events-none absolute bottom-4 left-4 h-7 w-7 border-b border-l border-signal/50" />
-              <div className="pointer-events-none absolute bottom-4 right-4 h-7 w-7 border-b border-r border-signal/50" />
             </div>
 
-            <div className="mt-4 flex items-center justify-between gap-4">
-              <p className="text-xs leading-5 text-white/35">
+            {/* VIDEO FOOTER */}
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-xs text-[#9CA3AF]">
                 Policy. Governance. Enterprise AI.
               </p>
-              <span className="text-xs tabular-nums text-white/35">
-                {String(activeIndex + 1).padStart(2, "0")} —{" "}
+
+              <p className="text-xs text-[#9CA3AF]">
+                {String(activeIndex + 1).padStart(2, "0")} /{" "}
                 {String(stormTimeline.length).padStart(2, "0")}
-              </span>
+              </p>
             </div>
           </motion.div>
         </div>
 
-        {/* Closing statement */}
+        {/* CLOSING STATEMENT */}
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: reduceMotion ? 0 : 0.7 }}
-          className="mt-20 border-t border-white/10 pt-10 lg:mt-28 lg:pt-14"
+          transition={{ duration: 0.7 }}
+          className="mt-24 border-t border-[#E5E7EB] pt-12 md:mt-32 md:pt-16"
         >
-          <p className="max-w-3xl font-serif text-3xl italic leading-tight text-white/90 sm:text-4xl lg:text-5xl">
-            No event has turned this moment into a room.
-            <span className="mt-2 block not-italic text-signal">
-              Until now.
-            </span>
-          </p>
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <h3 className="max-w-4xl text-3xl font-medium leading-tight tracking-[-0.04em] sm:text-4xl md:text-5xl">
+              The decisions are happening now.
+              <span className="block text-blue-600">
+                The conversation starts here.
+              </span>
+            </h3>
+
+            <a
+              href="#registration"
+              className="group flex shrink-0 items-center gap-3 text-sm font-medium text-[#111827] transition hover:text-blue-600"
+            >
+              Join the Summit
+
+              <span className="flex h-10 w-10 items-center justify-center rounded-full border border-[#DDE1E7] transition group-hover:border-blue-600 group-hover:bg-blue-600 group-hover:text-white">
+                <ArrowRight size={16} />
+              </span>
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
