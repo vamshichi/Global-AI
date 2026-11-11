@@ -107,7 +107,7 @@ export function Stats() {
         </div>
 
         {/* Closing statement */}
-        <motion.div
+        {/* <motion.div
           initial={reducedMotion ? false : { opacity: 0 }}
           whileInView={reducedMotion ? undefined : { opacity: 1 }}
           viewport={{ once: true }}
@@ -129,7 +129,7 @@ export function Stats() {
               className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
             />
           </a>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

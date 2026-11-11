@@ -123,12 +123,12 @@ export function Hero() {
             </div>
 
             {/* Description */}
-            <div className="max-w-sm">
+            {/* <div className="max-w-sm">
               <p className="text-sm leading-6 text-white/70">
                 A gathering of leaders shaping the future of AI governance,
                 risk, compliance and security.
               </p>
-            </div>
+            </div> */}
 
             {/* CTA */}
             <div className="flex flex-col gap-3 sm:items-start lg:items-end">
@@ -145,18 +145,18 @@ export function Hero() {
                 />
               </Button>
 
-              <a
+              {/* <a
                 href="#agenda"
                 className="text-xs text-white/50 transition-colors hover:text-white"
               >
                 Explore the summit →
-              </a>
+              </a> */}
             </div>
           </motion.div>
         </div>
 
         {/* Bottom signature */}
-        <div className="mt-10 hidden items-center justify-between border-t border-white/10 pt-4 md:flex">
+        {/* <div className="mt-10 hidden items-center justify-between border-t border-white/10 pt-4 md:flex">
           <p className="text-[9px] uppercase tracking-[0.22em] text-white/35">
             Governance · Risk · Compliance · Security
           </p>
@@ -164,7 +164,7 @@ export function Hero() {
           <p className="text-[9px] uppercase tracking-[0.22em] text-white/35">
             Mumbai, India
           </p>
-        </div>
+        </div> */}
       </div>
     </section>
   );

@@ -209,7 +209,7 @@ export function StormTimeline() {
                         {entry.headline}
                       </p>
 
-                      <AnimatePresence initial={false}>
+                      {/* <AnimatePresence initial={false}>
                         {active && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
@@ -223,7 +223,7 @@ export function StormTimeline() {
                             </p>
                           </motion.div>
                         )}
-                      </AnimatePresence>
+                      </AnimatePresence> */}
                     </div>
                   </motion.button>
                 );
@@ -231,7 +231,7 @@ export function StormTimeline() {
             </div>
 
             {/* TIMELINE CONTROLS */}
-            <div className="mt-6 flex items-center justify-between">
+            {/* <div className="mt-6 flex items-center justify-between">
               <p className="text-xs text-[#9CA3AF]">
                 Explore the regulatory timeline
               </p>
@@ -255,7 +255,7 @@ export function StormTimeline() {
                   <ArrowRight size={16} />
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* RIGHT VIDEO PANEL */}
@@ -363,7 +363,7 @@ export function StormTimeline() {
             </div>
 
             {/* VIDEO FOOTER */}
-            <div className="mt-4 flex items-center justify-between">
+            {/* <div className="mt-4 flex items-center justify-between">
               <p className="text-xs text-[#9CA3AF]">
                 Policy. Governance. Enterprise AI.
               </p>
@@ -372,12 +372,12 @@ export function StormTimeline() {
                 {String(activeIndex + 1).padStart(2, "0")} /{" "}
                 {String(stormTimeline.length).padStart(2, "0")}
               </p>
-            </div>
+            </div> */}
           </motion.div>
         </div>
 
         {/* CLOSING STATEMENT */}
-        <motion.div
+        {/* <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -403,7 +403,7 @@ export function StormTimeline() {
               </span>
             </a>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );

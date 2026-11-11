@@ -29,7 +29,7 @@ export default function Home() {
         <PartnerSection />
         <DelegatesSection />
         <VenueSection />
-        <InsightsSection />
+        {/* <InsightsSection /> */}
         <CtaSection />
         <RegistrationSection />
       </main>
