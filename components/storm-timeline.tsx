@@ -30,22 +30,22 @@ const pillars = [
 
 const slides = [
   {
-    src: "/images/storm-1.png",
+    src: "/images/storms-1.png",
     alt: "AI governance and enterprise leadership",
     label: "AI Governance",
   },
   {
-    src: "/images/storm-2.png",
+    src: "/images/storms-2.png",
     alt: "Enterprise artificial intelligence risk management",
     label: "AI Risk",
   },
   {
-    src: "/images/storm-3.png",
+    src: "/images/storms-3.png",
     alt: "Regulatory compliance and responsible AI",
     label: "AI Compliance",
   },
   {
-    src: "/images/storm-4.png",
+    src: "/images/storms-4.png",
     alt: "Cybersecurity and artificial intelligence security",
     label: "AI Security",
   },
