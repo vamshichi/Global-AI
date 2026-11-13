@@ -284,7 +284,7 @@ export function StormTimeline() {
                   onPause={() => setIsPlaying(false)}
                 >
                   <source
-                    src="/videos/storm.mp4"
+                    src="/videos/hero-background-2.mp4"
                     type="video/mp4"
                   />
                 </video>
