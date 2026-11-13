@@ -51,7 +51,7 @@ export function Agenda() {
             className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"
           >
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
+              <p className="mb-3 text-2xl font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
                 Summit Agenda
               </p>
 
@@ -210,7 +210,7 @@ export function Agenda() {
               whileTap={reducedMotion ? undefined : { scale: 0.97 }}
               className="inline-flex min-h-11 items-center justify-center gap-3 bg-[#174B89] px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#102A56]"
             >
-              Become a Delegate
+              Apply for Delegate Invitation
               <ArrowUpRight size={16} />
             </motion.button>
           </motion.div>

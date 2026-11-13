@@ -38,7 +38,7 @@ export function WhyAttend() {
             {...reveal()}
             className="mb-10"
           >
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#A9C9F3]">
+            <p className="mb-3 text-3xl font-semibold uppercase tracking-[0.18em] text-[#A9C9F3] pb-10">
               Why Attend
             </p>
 
@@ -116,7 +116,7 @@ export function WhyAttend() {
               onClick={() => setActiveForm("delegate")}
               className="inline-flex min-h-12 shrink-0 items-center justify-center gap-4 bg-white px-6 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-[#102A56] transition-all duration-300 hover:bg-[#DCEBFA]"
             >
-              Become a Delegate
+              Apply for Delegate Invitation
               <ArrowUpRight size={16} />
             </motion.button>
           </motion.div>

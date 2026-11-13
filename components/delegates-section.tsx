@@ -119,7 +119,7 @@ export function DelegatesSection() {
               }
               className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 bg-[#174B89] px-6 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#102A56]"
             >
-              Become a Delegate
+              Apply for Delegate Invitation
               <ArrowUpRight size={16} />
             </motion.button>
           </motion.div>

@@ -197,7 +197,7 @@ export function ExperiencesSection() {
               onClick={() => setActiveForm("delegate")}
               className="inline-flex items-center gap-2 border border-[#174B89] px-5 py-3 text-xs font-semibold text-[#174B89] transition-all duration-300 hover:bg-[#EFF5FC]"
             >
-              Become a Delegate
+              Apply for Delegate Invitation
               <ArrowUpRight size={15} />
             </motion.button>
           </motion.div>

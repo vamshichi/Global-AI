@@ -100,11 +100,11 @@ export function SponsorshipBenefits() {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="mx-auto mb-12 max-w-3xl text-center"
           >
-            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#D8BD8B]">
+            <p className="mb-4 text-3xl font-semibold uppercase tracking-[0.2em] text-[#D8BD8B]">
               Partnership Opportunities
             </p>
 
-            <h2 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="text-xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
               Put Your Brand at the
               <span className="text-[#A9C9F3]"> Centre of the Conversation.</span>
             </h2>

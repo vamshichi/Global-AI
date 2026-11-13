@@ -22,45 +22,57 @@ const pillars = [
 export function Stats() {
   const reducedMotion = useReducedMotion();
 
+  const reveal = (delay = 0) => ({
+    initial: reducedMotion ? false : { opacity: 0, y: 20 },
+    whileInView: reducedMotion ? undefined : { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.15 },
+    transition: {
+      duration: reducedMotion ? 0 : 0.6,
+      delay: reducedMotion ? 0 : delay,
+    },
+  });
+
   return (
     <section
       id="market-intelligence"
-      className="relative overflow-hidden bg-[#102A56] py-20 text-white sm:py-24 lg:py-32"
+      className="relative isolate overflow-hidden bg-[#102A56] py-14 text-white sm:py-20 lg:py-28 xl:py-32"
     >
-      {/* Subtle background detail */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-40 top-0 h-[500px] w-[500px] rounded-full bg-[#2866B5]/20 blur-[150px]" />
-        <div className="absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-[#C5A46D]/[0.06] blur-[130px]" />
+      {/* Background details */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        <div className="absolute -right-40 -top-20 h-64 w-64 rounded-full bg-[#2866B5]/20 blur-[100px] sm:h-96 sm:w-96 sm:blur-[130px] lg:h-[500px] lg:w-[500px]" />
+
+        <div className="absolute -bottom-20 -left-40 h-64 w-64 rounded-full bg-[#C5A46D]/[0.06] blur-[100px] sm:h-80 sm:w-80 sm:blur-[120px] lg:h-[400px] lg:w-[400px]" />
       </div>
 
-      <div className="container-edge relative z-10">
-
+      <div className="container-edge relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-10 xl:px-14">
         {/* Section heading */}
         <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 24 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mb-12 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-end"
+          {...reveal()}
+          className="mb-9 grid gap-5 sm:mb-12 sm:gap-7 lg:mb-14 lg:grid-cols-[1.2fr_0.8fr] lg:items-end"
         >
-          <div>
-            <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-8 bg-[#C5A46D]" />
-              <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#D8BD8B]">
+          <div className="min-w-0">
+            <div className="mb-4 flex items-center gap-3 sm:mb-5">
+              <span className="h-px w-7 shrink-0 bg-[#C5A46D] sm:w-8" />
+
+              <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-[#D8BD8B] sm:text-[10px] sm:tracking-[0.24em]">
                 AI Governance Landscape · 2027
               </p>
             </div>
 
-            <h2 className="max-w-3xl text-[clamp(2.7rem,5.5vw,5rem)] font-medium leading-[1.02] tracking-[-0.055em] text-white">
+            <h2 className="max-w-3xl text-[clamp(2.25rem,6vw,5rem)] font-medium leading-[1.04] tracking-[-0.055em] text-white">
               AI is advancing.
               <br />
+
               <span className="text-[#A9C9F3]">
                 Is governance keeping pace?
               </span>
             </h2>
           </div>
 
-          <p className="max-w-md text-sm leading-7 text-blue-100/75 lg:pb-2">
+          <p className="max-w-md text-[13px] leading-6 text-blue-100/75 sm:text-sm sm:leading-7 lg:pb-2">
             The future of AI depends on responsible governance,
             enterprise risk management and security.
           </p>
@@ -68,15 +80,10 @@ export function Stats() {
 
         {/* Featured event video */}
         <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 24 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          {...reveal(0.1)}
           className="group relative overflow-hidden border border-white/10 bg-[#0B1E3B]"
         >
-          <div className="relative h-[280px] sm:h-[380px] lg:h-[460px]">
-
-            {/* Background video */}
+          <div className="relative aspect-[4/3] min-h-[260px] w-full sm:aspect-[16/8] sm:min-h-[340px] md:aspect-[16/7] lg:aspect-[16/6] lg:min-h-[420px]">
             <video
               className="absolute inset-0 h-full w-full object-cover"
               autoPlay
@@ -85,60 +92,72 @@ export function Stats() {
               playsInline
               preload="metadata"
               poster="/videos/ai-grcs-poster.jpg"
+              aria-label="AI GRCS Summit background video"
             >
               <source
-                src="/videos/hero-background-2.mp4"
+                src="/videos/hero-background-4.mp4"
                 type="video/mp4"
               />
+
               Your browser does not support HTML video.
             </video>
 
             {/* Video overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#071B39]/85 via-[#071B39]/35 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#071B39]/90 via-[#071B39]/35 to-[#071B39]/10 sm:bg-gradient-to-r sm:from-[#071B39]/85 sm:via-[#071B39]/40 sm:to-transparent" />
 
-            <div className="absolute bottom-0 left-0 z-10 max-w-2xl p-7 sm:p-10 lg:p-14">
-              <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#E7CB98]">
+            {/* Video content */}
+            <div className="absolute bottom-0 left-0 z-10 w-full max-w-2xl p-5 sm:p-8 md:p-10 lg:p-14">
+              <p className="mb-3 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#E7CB98] sm:mb-4 sm:text-[10px] sm:tracking-[0.22em]">
                 AI GRCS Summit India · 2027
               </p>
 
-              <h3 className="text-3xl font-medium leading-tight tracking-[-0.035em] text-white sm:text-4xl lg:text-5xl">
+              <h3 className="max-w-xl text-2xl font-medium leading-[1.15] tracking-[-0.035em] text-white sm:text-3xl md:text-4xl lg:text-5xl">
                 Building trust in the age of artificial intelligence.
               </h3>
             </div>
 
-            {/* Event date */}
-            <div className="absolute right-6 top-6 z-10 hidden border border-white/30 bg-[#102A56]/60 px-4 py-3 backdrop-blur-sm sm:block">
-              <p className="text-[10px] uppercase tracking-[0.16em] text-white/70">
+            {/* Event date - desktop */}
+            <div className="absolute right-4 top-4 z-10 hidden border border-white/30 bg-[#102A56]/65 px-4 py-3 backdrop-blur-sm sm:block md:right-6 md:top-6">
+              <p className="text-[9px] uppercase tracking-[0.16em] text-white/70">
                 Mumbai, India
               </p>
-              <p className="mt-1 text-sm font-semibold text-white">
+
+              <p className="mt-1 text-xs font-semibold text-white md:text-sm">
                 21 January 2027
               </p>
             </div>
           </div>
+
+          {/* Event date - mobile */}
+          <div className="flex items-center justify-between border-t border-white/10 bg-[#0B1E3B] px-5 py-3 sm:hidden">
+            <span className="text-[10px] uppercase tracking-[0.14em] text-white/60">
+              Mumbai, India
+            </span>
+
+            <span className="text-xs font-semibold text-white">
+              21 January 2027
+            </span>
+          </div>
         </motion.div>
 
         {/* Four governance pillars */}
-        <div className="grid grid-cols-2 border-l border-t border-white/15 sm:grid-cols-4">
+        <div className="mt-6 grid grid-cols-2 border-l border-t border-white/15 sm:mt-8 sm:grid-cols-4">
           {pillars.map((pillar, index) => {
             const Icon = pillar.icon;
 
             return (
               <motion.div
                 key={pillar.label}
-                initial={reducedMotion ? false : { opacity: 0, y: 15 }}
-                whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="flex items-center gap-3 border-b border-r border-white/15 px-4 py-6 transition-colors hover:bg-white/[0.05] sm:justify-center sm:py-7"
+                {...reveal(index * 0.06)}
+                className="flex min-h-[68px] min-w-0 items-center gap-2.5 border-b border-r border-white/15 px-3 py-4 transition-colors duration-300 hover:bg-white/[0.05] sm:min-h-[82px] sm:justify-center sm:gap-3 sm:px-4 sm:py-6"
               >
                 <Icon
-                  size={19}
+                  size={18}
                   strokeWidth={1.7}
-                  className="shrink-0 text-[#D8BD8B]"
+                  className="shrink-0 text-[#D8BD8B] sm:h-5 sm:w-5"
                 />
 
-                <span className="text-xs font-semibold uppercase tracking-[0.12em] text-white sm:text-sm">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white sm:text-xs sm:tracking-[0.12em] md:text-sm">
                   {pillar.label}
                 </span>
               </motion.div>
@@ -147,68 +166,86 @@ export function Stats() {
         </div>
 
         {/* Market statistics */}
-        <div className="mt-20 lg:mt-24">
+        <div className="mt-14 sm:mt-20 lg:mt-24">
           <motion.div
-            initial={reducedMotion ? false : { opacity: 0, y: 20 }}
-            whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-9 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+            {...reveal()}
+            className="mb-7 flex flex-col gap-3 sm:mb-9 sm:flex-row sm:items-end sm:justify-between"
           >
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#D8BD8B]">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#D8BD8B] sm:text-[10px] sm:tracking-[0.22em]">
                 Market Intelligence
               </p>
 
-              <h3 className="mt-3 text-3xl font-medium tracking-[-0.04em] text-white sm:text-4xl">
+              <h3 className="mt-2 text-2xl font-medium tracking-[-0.04em] text-white sm:mt-3 sm:text-3xl md:text-4xl">
                 The numbers behind AI.
               </h3>
             </div>
 
-            <p className="text-xs text-blue-100/60">
+            <p className="text-[10px] leading-5 text-blue-100/60 sm:text-xs">
               AI Governance · Risk · Compliance · Security
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 border-l border-t border-white/15 lg:grid-cols-4">
-            {marketStats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={reducedMotion ? false : { opacity: 0, y: 20 }}
-                whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.55,
-                  delay: reducedMotion ? 0 : index * 0.08,
-                }}
-                className="group relative flex min-h-[190px] flex-col justify-between border-b border-r border-white/15 bg-white/[0.035] p-6 transition-colors duration-300 hover:bg-white/[0.08] sm:min-h-[220px] sm:p-8"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold tracking-[0.18em] text-blue-100/45">
-                    0{index + 1}
-                  </span>
+          {/* Responsive statistics grid */}
+          <div className="grid grid-cols-1 border-l border-t border-white/15 min-[420px]:grid-cols-2 lg:grid-cols-4">
+            {marketStats.map((stat, index) => {
+              const hasPrefixAndSuffix =
+                Boolean(stat.prefix) && Boolean(stat.suffix);
 
-                  <ArrowUpRight
-                    size={15}
-                    className="text-blue-100/50 transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#D8BD8B]"
-                  />
-                </div>
+              return (
+                <motion.div
+                  key={stat.label}
+                  {...reveal(index * 0.07)}
+                  className="group relative flex min-h-[165px] min-w-0 flex-col justify-between border-b border-r border-white/15 bg-white/[0.035] p-4 transition-colors duration-300 hover:bg-white/[0.08] min-[420px]:min-h-[185px] sm:p-7 lg:min-h-[210px] lg:p-8"
+                >
+                  {/* Card number */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-semibold tracking-[0.18em] text-blue-100/45 sm:text-[10px]">
+                      0{index + 1}
+                    </span>
 
-                <div>
-                  <div className="font-serif text-[clamp(2.5rem,4vw,4.2rem)] leading-none tracking-[-0.05em] text-white">
-                    <span className="text-[#D8BD8B]">{stat.prefix}</span>
-                    <Counter value={stat.value} />
-                    <span className="text-[#D8BD8B]">{stat.suffix}</span>
+                    <ArrowUpRight
+                      size={15}
+                      className="text-blue-100/50 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-[#D8BD8B]"
+                    />
                   </div>
 
-                  <p className="mt-4 max-w-[24ch] text-sm leading-6 text-blue-100/75">
-                    {stat.label}
-                  </p>
-                </div>
+                  {/* Statistic value and label */}
+                  <div className="mt-8 min-w-0">
+                    <div
+                      className={`flex w-full min-w-0 items-baseline whitespace-nowrap font-serif leading-none tracking-[-0.055em] text-white ${
+                        hasPrefixAndSuffix
+                          ? "text-[clamp(1.25rem,5vw,3.8rem)] sm:text-[clamp(1.8rem,3.5vw,4.2rem)]"
+                          : "text-[clamp(2rem,6vw,4.2rem)]"
+                      }`}
+                    >
+                      {stat.prefix && (
+                        <span className="shrink-0 text-[#D8BD8B]">
+                          {stat.prefix}
+                        </span>
+                      )}
 
-                <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-[#D8BD8B] transition-all duration-500 group-hover:w-full" />
-              </motion.div>
-            ))}
+                      <span className="min-w-0">
+                        <Counter value={stat.value} />
+                      </span>
+
+                      {stat.suffix && (
+                        <span className="shrink-0 text-[#D8BD8B]">
+                          {stat.suffix}
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="mt-3 max-w-[26ch] text-xs leading-5 text-blue-100/75 sm:mt-4 sm:text-sm sm:leading-6">
+                      {stat.label}
+                    </p>
+                  </div>
+
+                  {/* Hover accent */}
+                  <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-[#D8BD8B] transition-all duration-500 group-hover:w-full" />
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -244,7 +244,7 @@ export function Hero() {
               onClick={() => setActiveForm("delegate")}
               className="w-full border border-white/60 px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white transition hover:bg-white hover:text-[#0b0d12] sm:w-auto"
             >
-              Become a Delegate
+              Apply for Delegate Invitation
             </button>
           </motion.div>
 

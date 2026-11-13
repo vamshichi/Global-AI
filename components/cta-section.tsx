@@ -35,7 +35,7 @@ export function CtaSection() {
       primary: true,
     },
     {
-      label: "Become a Delegate",
+      label: "Apply for Delegate Invitation",
       type: "delegate",
       description: "Join the conversations shaping responsible AI.",
       primary: false,
