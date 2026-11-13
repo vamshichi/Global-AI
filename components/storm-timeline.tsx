@@ -1,8 +1,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+import { useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
@@ -11,12 +10,12 @@ import {
 
 import {
   ArrowUpRight,
+  Play,
+  Pause,
   ShieldCheck,
   Activity,
   Scale,
   LockKeyhole,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 
 import { stormTimeline } from "@/data/storm";
@@ -28,33 +27,11 @@ const pillars = [
   { number: "04", name: "Security", icon: LockKeyhole },
 ];
 
-const slides = [
-  {
-    src: "/images/storm-1.jpg",
-    alt: "AI governance and enterprise leadership",
-    label: "AI Governance",
-  },
-  {
-    src: "/images/storm-2.jpg",
-    alt: "Enterprise artificial intelligence risk management",
-    label: "AI Risk",
-  },
-  {
-    src: "/images/storm-3.jpg",
-    alt: "Regulatory compliance and responsible AI",
-    label: "AI Compliance",
-  },
-  {
-    src: "/images/storm-4.jpg",
-    alt: "Cybersecurity and artificial intelligence security",
-    label: "AI Security",
-  },
-];
-
 export function StormTimeline() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [activeSlide, setActiveSlide] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
 
+  const videoRef = useRef<HTMLVideoElement>(null);
   const reduceMotion = useReducedMotion();
 
   const activeEntry = stormTimeline[activeIndex];
@@ -62,23 +39,20 @@ export function StormTimeline() {
   const progress =
     ((activeIndex + 1) / stormTimeline.length) * 100;
 
-  // Automatically change images every 4 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSlide((current) => (current + 1) % slides.length);
-    }, 4000);
+  const toggleVideo = async () => {
+    const video = videoRef.current;
 
-    return () => clearInterval(interval);
-  }, []);
+    if (!video) return;
 
-  const nextSlide = () => {
-    setActiveSlide((current) => (current + 1) % slides.length);
-  };
-
-  const previousSlide = () => {
-    setActiveSlide(
-      (current) => (current - 1 + slides.length) % slides.length
-    );
+    if (video.paused) {
+      try {
+        await video.play();
+      } catch {
+        setIsPlaying(false);
+      }
+    } else {
+      video.pause();
+    }
   };
 
   const reveal = (delay = 0) => ({
@@ -86,7 +60,7 @@ export function StormTimeline() {
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, amount: 0.15 },
     transition: {
-      duration: reduceMotion ? 0 : 0.65,
+      duration: 0.65,
       delay: reduceMotion ? 0 : delay,
       ease: [0.22, 1, 0.36, 1] as const,
     },
@@ -101,6 +75,7 @@ export function StormTimeline() {
 
         {/* INTRODUCTION */}
         <motion.div {...reveal()} className="max-w-4xl">
+
           <div className="mb-6 flex items-center gap-3">
             <span className="h-px w-8 bg-[#155EEF]" />
 
@@ -121,6 +96,7 @@ export function StormTimeline() {
             intelligence. The decisions made today will determine
             how AI is governed, secured and trusted tomorrow.
           </p>
+
         </motion.div>
 
         {/* GOVERNANCE PILLARS */}
@@ -129,6 +105,7 @@ export function StormTimeline() {
           className="mt-14 border-y border-[#E5ECF5] py-6 md:mt-16"
         >
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-0">
+
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
 
@@ -157,14 +134,16 @@ export function StormTimeline() {
                 </div>
               );
             })}
+
           </div>
         </motion.div>
 
-        {/* TIMELINE AND IMAGE SLIDER */}
+        {/* TIMELINE AND VIDEO */}
         <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
 
           {/* LEFT: TIMELINE */}
           <motion.div {...reveal()}>
+
             <div className="mb-8 flex items-end justify-between">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#155EEF]">
@@ -195,6 +174,7 @@ export function StormTimeline() {
 
             {/* MILESTONES */}
             <div className="space-y-2">
+
               {stormTimeline.map((entry, index) => {
                 const active = index === activeIndex;
                 const completed = index < activeIndex;
@@ -211,7 +191,7 @@ export function StormTimeline() {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.15 }}
                     transition={{
-                      duration: reduceMotion ? 0 : 0.45,
+                      duration: 0.45,
                       delay: reduceMotion ? 0 : index * 0.05,
                     }}
                     className={`group flex w-full items-start gap-5 border-b border-[#EAF0F8] px-3 py-5 text-left transition-colors duration-300 ${
@@ -220,6 +200,8 @@ export function StormTimeline() {
                         : "hover:bg-[#FAFCFF]"
                     }`}
                   >
+
+                    {/* NUMBER */}
                     <div
                       className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors duration-300 ${
                         active
@@ -232,7 +214,9 @@ export function StormTimeline() {
                       {String(index + 1).padStart(2, "0")}
                     </div>
 
+                    {/* CONTENT */}
                     <div className="min-w-0 flex-1">
+
                       <div className="flex items-center justify-between gap-3">
                         <span
                           className={`text-[9px] font-semibold uppercase tracking-[0.16em] ${
@@ -267,143 +251,112 @@ export function StormTimeline() {
                       <p className="mt-2 text-sm leading-6 text-[#7A8DA7]">
                         {entry.headline}
                       </p>
+
                     </div>
                   </motion.button>
                 );
               })}
+
             </div>
+
           </motion.div>
 
-          {/* RIGHT: AUTOMATIC IMAGE SLIDER */}
+          {/* RIGHT: VIDEO */}
           <motion.div
             {...reveal(0.15)}
             className="lg:sticky lg:top-28 lg:self-start"
           >
+
             <div className="overflow-hidden rounded-sm bg-[#102A56]">
 
-              {/* IMAGE SLIDER */}
-              <div className="group relative aspect-[16/10] overflow-hidden bg-[#102A56]">
+              {/* VIDEO */}
+              <div className="relative">
+                <video
+                  ref={videoRef}
+                  className="aspect-video w-full object-cover"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  poster="/images/delegate-profile.png"
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                >
+                  <source
+                    src="/videos/storm.mp4"
+                    type="video/mp4"
+                  />
+                </video>
 
-                <AnimatePresence mode="sync">
+                {/* SIMPLE VIDEO CONTROL */}
+                <button
+                  type="button"
+                  onClick={toggleVideo}
+                  aria-label={isPlaying ? "Pause video" : "Play video"}
+                  className="absolute bottom-5 right-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-[#102A56]/60 text-white backdrop-blur-sm transition hover:bg-white hover:text-[#155EEF]"
+                >
+                  {isPlaying ? (
+                    <Pause size={17} />
+                  ) : (
+                    <Play size={17} />
+                  )}
+                </button>
+              </div>
+
+              {/* VIDEO INFORMATION */}
+              <div className="p-6 sm:p-8">
+
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#A8C9FF]">
+                  AI Regulatory Intelligence
+                </p>
+
+                <AnimatePresence mode="wait">
                   <motion.div
-                    key={activeSlide}
+                    key={activeEntry.date}
                     initial={
-                      reduceMotion
-                        ? { opacity: 1 }
-                        : { opacity: 0 }
+                      reduceMotion ? false : { opacity: 0, y: 10 }
                     }
-                    animate={{ opacity: 1 }}
+                    animate={{ opacity: 1, y: 0 }}
                     exit={
                       reduceMotion
-                        ? { opacity: 1 }
-                        : { opacity: 0 }
+                        ? undefined
+                        : { opacity: 0, y: -8 }
                     }
-                    transition={{
-                      duration: reduceMotion ? 0 : 0.8,
-                      ease: "easeInOut",
-                    }}
-                    className="absolute inset-0"
+                    transition={{ duration: 0.3 }}
                   >
-                    <Image
-                      src={slides[activeSlide].src}
-                      alt={slides[activeSlide].alt}
-                      fill
-                      priority={activeSlide === 0}
-                      sizes="(max-width: 1024px) 100vw, 55vw"
-                      className="object-cover"
-                    />
+                    <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                      {activeEntry.date}
+                    </h3>
+
+                    <p className="mt-3 max-w-lg text-sm leading-7 text-white/65">
+                      {activeEntry.headline}
+                    </p>
                   </motion.div>
                 </AnimatePresence>
 
-                {/* IMAGE OVERLAY */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#081B38]/75 via-transparent to-[#081B38]/10" />
+                <div className="mt-7 flex items-center justify-between border-t border-white/15 pt-5">
+                  <p className="text-xs text-white/55">
+                    India's AI future is being shaped now.
+                  </p>
 
-                {/* IMAGE LABEL */}
-                <div className="absolute bottom-7 left-7 right-7 z-10">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={activeSlide}
-                      initial={
-                        reduceMotion ? false : { opacity: 0, y: 10 }
-                      }
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={
-                        reduceMotion
-                          ? undefined
-                          : { opacity: 0, y: -5 }
-                      }
-                      transition={{
-                        duration: reduceMotion ? 0 : 0.35,
-                      }}
-                    >
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#C6D9FF]">
-                        AI Governance Intelligence
-                      </p>
-
-                      <h3 className="mt-2 text-2xl font-semibold text-white sm:text-3xl">
-                        {slides[activeSlide].label}
-                      </h3>
-                    </motion.div>
-                  </AnimatePresence>
+                  <span className="text-xs font-semibold text-[#A8C9FF]">
+                    {String(activeIndex + 1).padStart(2, "0")} /{" "}
+                    {String(stormTimeline.length).padStart(2, "0")}
+                  </span>
                 </div>
 
-                {/* PREVIOUS / NEXT BUTTONS */}
-                <button
-                  type="button"
-                  onClick={previousSlide}
-                  aria-label="Previous image"
-                  className="absolute left-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-[#102A56]/40 text-white opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:text-[#155EEF] group-hover:opacity-100 focus:opacity-100"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={nextSlide}
-                  aria-label="Next image"
-                  className="absolute right-4 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-[#102A56]/40 text-white opacity-0 backdrop-blur-sm transition-all hover:bg-white hover:text-[#155EEF] group-hover:opacity-100 focus:opacity-100"
-                >
-                  <ChevronRight size={20} />
-                </button>
-
-                {/* SLIDE COUNTER */}
-                <div className="absolute right-6 top-6 z-10 rounded-full border border-white/30 bg-[#102A56]/40 px-3 py-1.5 text-[10px] font-medium text-white backdrop-blur-sm">
-                  {String(activeSlide + 1).padStart(2, "0")} /{" "}
-                  {String(slides.length).padStart(2, "0")}
-                </div>
-              </div>
-
-              {/* SLIDER FOOTER */}
-              <div className="flex items-center justify-between gap-4 px-6 py-5 sm:px-8">
-                <p className="text-xs text-white/60">
-                  India's AI future is being shaped now.
-                </p>
-
-                {/* SLIDER DOTS */}
-                <div className="flex items-center gap-2">
-                  {slides.map((slide, index) => (
-                    <button
-                      key={slide.src}
-                      type="button"
-                      onClick={() => setActiveSlide(index)}
-                      aria-label={`Show image ${index + 1}`}
-                      aria-pressed={activeSlide === index}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        activeSlide === index
-                          ? "w-7 bg-[#A8C9FF]"
-                          : "w-1.5 bg-white/35 hover:bg-white/70"
-                      }`}
-                    />
-                  ))}
-                </div>
               </div>
             </div>
 
             <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.16em] text-[#91A3BC]">
               Policy · Governance · Enterprise AI
             </p>
+
           </motion.div>
+
         </div>
+
       </div>
     </section>
   );
