@@ -1,25 +1,39 @@
+
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { delegateTitles } from "@/data/industry";
 import { Counter } from "@/components/ui/counter";
 
 export function DelegateProfile() {
+  const reducedMotion = useReducedMotion();
+
   return (
-    <div id="delegates" className="grid gap-16 lg:grid-cols-2 lg:items-center">
+    <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+
+      {/* Delegate Profile */}
       <div>
-        <p className="label-tag">Delegates</p>
-        <h2 className="mt-5 text-[clamp(2.25rem,4.6vw,4rem)] font-medium leading-[1.05] text-ink">
-          200&ndash;250 seats.
-          <br />
-          Curated, not collected.
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
+          Delegate Profile
+        </p>
+
+        <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-[#102A56] sm:text-4xl">
+          200–250
+          <span className="block text-[#2866B5]">
+            Senior Decision-Makers
+          </span>
         </h2>
 
-        <div className="mt-10 flex flex-wrap gap-2">
+        <p className="mt-3 max-w-lg text-sm leading-6 text-[#526B89]">
+          A curated audience of leaders responsible for shaping,
+          approving and managing enterprise AI strategies.
+        </p>
+
+        <div className="mt-6 flex flex-wrap gap-2">
           {delegateTitles.map((title) => (
             <span
               key={title}
-              className="rounded-full border border-line-strong px-4 py-1.5 text-sm text-ink-dim"
+              className="border border-[#DCE7F5] bg-[#F7F9FC] px-3 py-2 text-xs font-medium text-[#34577F]"
             >
               {title}
             </span>
@@ -27,19 +41,31 @@ export function DelegateProfile() {
         </div>
       </div>
 
+      {/* Leadership Statistic */}
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={reducedMotion ? false : { opacity: 0, y: 14 }}
+        whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-        className="border border-line bg-charcoal p-12"
+        transition={{ duration: 0.5 }}
+        className="border border-[#DCE7F5] bg-[#F7F9FC] p-6 sm:p-8"
       >
-        <p className="font-serif text-[clamp(3rem,6vw,5.5rem)] leading-none text-signal">
-          <Counter value={65} />%
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#526B89]">
+          Senior Leadership Representation
         </p>
-        <p className="mt-4 text-lg text-ink">VP-and-above.</p>
-        <p className="mt-6 max-w-sm text-sm leading-relaxed text-ink-dim">
-          This is the room that approves, funds, audits or kills your AI roadmap.
+
+        <div className="mt-4 flex items-baseline gap-1">
+          <span className="text-5xl font-semibold tracking-tight text-[#174B89] sm:text-6xl">
+            <Counter value={65} />%
+          </span>
+        </div>
+
+        <h3 className="mt-2 text-lg font-semibold text-[#102A56]">
+          VP-level and above
+        </h3>
+
+        <p className="mt-2 text-sm leading-6 text-[#526B89]">
+          Connect with senior leaders who influence enterprise
+          AI strategy, investment, governance and decision-making.
         </p>
       </motion.div>
     </div>

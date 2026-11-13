@@ -5,6 +5,6 @@ export const navLinks = [
   // { label: "Speakers", href: "#speakers" },
   { label: "Partners", href: "#partners" },
   { label: "Delegates", href: "#delegates" },
-  { label: "Venue", href: "#venue" },
-  { label: "Insights", href: "#insights" },
+  // { label: "Venue", href: "#venue" },
+  // { label: "Insights", href: "#insights" },
 ];

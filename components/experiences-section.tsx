@@ -2,148 +2,213 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+
 import { experiences } from "@/data/experiences";
 import { ExperienceCard } from "@/components/experience-card";
-import { Button } from "@/components/ui/button";
-import { ArrowUpRight } from "lucide-react";
+import FormModal, { type FormType } from "@/components/FormModal";
 
 export function ExperiencesSection() {
   const [, second, third, fourth, fifth] = experiences;
+
   const reducedMotion = useReducedMotion();
+  const [activeForm, setActiveForm] = useState<FormType>(null);
+
+  const reveal = {
+    hidden: { opacity: 0, y: 24 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  const cardReveal = {
+    hidden: { opacity: 0, y: 28 },
+    visible: (index: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    }),
+  };
 
   return (
-    <section
-      id="experiences"
-      className="relative overflow-hidden bg-[#F7F7F4] py-24 text-[#101522] sm:py-32 lg:py-40"
-    >
-      <div className="container-edge">
-        {/* Editorial intro */}
-        <div className="grid gap-8 lg:grid-cols-[1fr_0.4fr] lg:items-end">
+    <>
+      <section
+        id="experiences"
+        className="overflow-hidden bg-white py-14 text-[#102A56] sm:py-16 lg:py-20"
+      >
+        <div className="container-edge">
+
+          {/* Heading */}
           <motion.div
-            initial={reducedMotion ? false : { opacity: 0, y: 24 }}
-            whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
+            variants={reveal}
+            initial={reducedMotion ? false : "hidden"}
+            whileInView={reducedMotion ? undefined : "visible"}
+            viewport={{ once: true, amount: 0.3 }}
+            className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
           >
-            <div className="mb-6 flex items-center gap-3">
-              <span className="h-px w-8 bg-blue-600" />
-              <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-blue-700">
-                Beyond the Conference
+            <div>
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
+                The Summit Experience
               </p>
+
+              <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+                More than a conference.
+                <span className="text-[#2866B5]">
+                  {" "}A meeting of minds.
+                </span>
+              </h2>
             </div>
 
-            <h2 className="max-w-4xl text-[clamp(2.8rem,6vw,5.5rem)] font-medium leading-[0.98] tracking-[-0.055em]">
-              Built to be talked about.
-              <br />
-              <span className="text-[#101522]/40">
-                Not just attended.
-              </span>
-            </h2>
+            <p className="max-w-md text-sm leading-6 text-[#526B89]">
+              Connect with industry leaders, exchange ideas and explore the
+              future of responsible AI.
+            </p>
           </motion.div>
 
-          <motion.p
-            initial={reducedMotion ? false : { opacity: 0, y: 20 }}
-            whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="max-w-sm text-sm leading-7 text-[#101522]/55 lg:pb-2"
-          >
-            Every moment is designed to bring the right people together,
-            spark meaningful conversations, and create connections that
-            continue long after the summit.
-          </motion.p>
-        </div>
+          {/* Experience Gallery */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
-        {/* Experience gallery */}
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:mt-20 lg:grid-cols-3 lg:gap-6">
-          {/* Featured networking experience */}
-          <motion.div
-            initial={reducedMotion ? false : { opacity: 0, y: 30 }}
-            whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.8 }}
-            className="group relative overflow-hidden bg-[#101522] lg:col-span-2"
-          >
-            <div className="relative h-[420px] sm:h-[500px] lg:h-[580px]">
+            {/* Featured Image */}
+            <motion.div
+              initial={reducedMotion ? false : { opacity: 0, y: 25 }}
+              whileInView={
+                reducedMotion ? undefined : { opacity: 1, y: 0 }
+              }
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="group relative min-h-[280px] overflow-hidden bg-[#102A56] sm:col-span-2 lg:min-h-[340px]"
+            >
               <Image
                 src="/images/executive-networking.png"
-                alt="Executives networking at a premium corporate conference"
+                alt="Technology leaders networking at an international conference"
                 fill
-                priority
+                priority={false}
                 sizes="(max-width: 1024px) 100vw, 66vw"
-                className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.04]"
+                className="object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.06]"
               />
 
-              {/* Cinematic image treatment */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050812]/95 via-[#050812]/25 to-[#050812]/5" />
-              <div className="absolute inset-0 bg-blue-950/10 transition-colors duration-700 group-hover:bg-blue-950/0" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#071B39]/90 via-[#071B39]/10 to-transparent transition-opacity duration-500 group-hover:from-[#071B39]/95" />
 
-              {/* Top label */}
-              <div className="absolute left-6 top-6 flex items-center gap-3 sm:left-8 sm:top-8">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-white/75">
-                  Featured Experience
-                </span>
-              </div>
+              <motion.div
+                initial={reducedMotion ? false : { opacity: 0, y: 18 }}
+                whileInView={
+                  reducedMotion ? undefined : { opacity: 1, y: 0 }
+                }
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+                className="absolute bottom-0 left-0 p-6 sm:p-8"
+              >
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#E7CB98]">
+                  Connect · Collaborate · Lead
+                </p>
 
-              {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-7 sm:p-10 lg:p-12">
-                <div className="flex items-end justify-between gap-6">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-blue-200/80">
-                      Connections that matter
-                    </p>
+                <h3 className="text-2xl font-semibold text-white sm:text-3xl">
+                  Executive Networking
+                </h3>
 
-                    <h3 className="mt-4 text-3xl font-medium tracking-tight text-white sm:text-4xl lg:text-5xl">
-                      Executive Networking
-                    </h3>
+                <p className="mt-2 text-sm text-white/80">
+                  Build meaningful connections with industry leaders.
+                </p>
+              </motion.div>
+            </motion.div>
 
-                    <p className="mt-4 max-w-lg text-sm leading-7 text-white/65">
-                      Meaningful conversations. Valuable connections.
-                      Opportunities that extend beyond the conference.
-                    </p>
-                  </div>
+            {/* Supporting Experiences */}
+            <motion.div
+              custom={0}
+              variants={cardReveal}
+              initial={reducedMotion ? false : "hidden"}
+              whileInView={reducedMotion ? undefined : "visible"}
+              viewport={{ once: true, amount: 0.15 }}
+              className="min-h-[280px]"
+            >
+              <ExperienceCard experience={second} delay={0} />
+            </motion.div>
 
-                  <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/30 text-white transition-all duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#101522] sm:flex">
-                    <ArrowUpRight size={20} />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <motion.div
+              custom={1}
+              variants={cardReveal}
+              initial={reducedMotion ? false : "hidden"}
+              whileInView={reducedMotion ? undefined : "visible"}
+              viewport={{ once: true, amount: 0.15 }}
+              className="min-h-[260px]"
+            >
+              <ExperienceCard experience={third} delay={0} />
+            </motion.div>
+
+            <motion.div
+              custom={2}
+              variants={cardReveal}
+              initial={reducedMotion ? false : "hidden"}
+              whileInView={reducedMotion ? undefined : "visible"}
+              viewport={{ once: true, amount: 0.15 }}
+              className="min-h-[260px]"
+            >
+              <ExperienceCard experience={fourth} delay={0} />
+            </motion.div>
+
+            <motion.div
+              custom={3}
+              variants={cardReveal}
+              initial={reducedMotion ? false : "hidden"}
+              whileInView={reducedMotion ? undefined : "visible"}
+              viewport={{ once: true, amount: 0.15 }}
+              className="min-h-[260px]"
+            >
+              <ExperienceCard experience={fifth} delay={0} />
+            </motion.div>
+          </div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={reducedMotion ? false : { opacity: 0, y: 18 }}
+            whileInView={
+              reducedMotion ? undefined : { opacity: 1, y: 0 }
+            }
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mt-9 flex flex-wrap gap-3 border-t border-[#E2EAF3] pt-6"
+          >
+            <motion.button
+              type="button"
+              whileHover={reducedMotion ? undefined : { y: -3 }}
+              whileTap={reducedMotion ? undefined : { scale: 0.97 }}
+              onClick={() => setActiveForm("sponsor")}
+              className="inline-flex items-center gap-2 bg-[#174B89] px-5 py-3 text-xs font-semibold text-white transition-colors duration-300 hover:bg-[#102A56]"
+            >
+              Become a Sponsor
+              <ArrowUpRight
+                size={15}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </motion.button>
+
+            <motion.button
+              type="button"
+              whileHover={reducedMotion ? undefined : { y: -3 }}
+              whileTap={reducedMotion ? undefined : { scale: 0.97 }}
+              onClick={() => setActiveForm("delegate")}
+              className="inline-flex items-center gap-2 border border-[#174B89] px-5 py-3 text-xs font-semibold text-[#174B89] transition-all duration-300 hover:bg-[#EFF5FC]"
+            >
+              Become a Delegate
+              <ArrowUpRight size={15} />
+            </motion.button>
           </motion.div>
-
-          {/* Supporting experiences */}
-          <div className="lg:row-span-1">
-            <ExperienceCard experience={second} delay={0.08} />
-          </div>
-
-          <ExperienceCard experience={third} delay={0.14} />
-
-          <div className="lg:col-span-2">
-            <ExperienceCard experience={fourth} size="lg" delay={0.2} />
-          </div>
-
-          <ExperienceCard experience={fifth} delay={0.26} />
         </div>
+      </section>
 
-        {/* CTA */}
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-          className="mt-12 flex flex-col gap-5 border-t border-[#101522]/10 pt-8 sm:flex-row sm:items-center sm:justify-between lg:mt-16"
-        >
-          <p className="max-w-md text-sm leading-6 text-[#101522]/50">
-            One summit. Exceptional people. Conversations that shape what comes next.
-          </p>
-
-          <Button href="#registration" variant="primary">
-            See These Live — Reserve Your Seat
-          </Button>
-        </motion.div>
-      </div>
-    </section>
+      {/* Popup Forms */}
+      <FormModal
+        type={activeForm}
+        onClose={() => setActiveForm(null)}
+      />
+    </>
   );
 }

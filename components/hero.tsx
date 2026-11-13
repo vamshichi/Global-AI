@@ -1,171 +1,308 @@
 
 "use client";
 
-import Image from "next/image";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import {
+  CalendarDays,
+  MapPin,
+  Users,
+  Sparkles,
+} from "lucide-react";
+
+import FormModal, { type FormType } from "@/components/FormModal";
+
+const heroVideos = [
+  "/videos/hero-background-1.mp4",
+  "/videos/hero-background-2.mp4",
+  "/videos/hero-background-3.mp4",
+];
 
 export function Hero() {
   const reduceMotion = useReducedMotion();
 
+  const [activeForm, setActiveForm] = useState<FormType>(null);
+  const [activeVideo, setActiveVideo] = useState(0);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  const targetDate = new Date(
+    "2027-01-21T09:00:00+05:30"
+  ).getTime();
+
+  // Countdown
+  useEffect(() => {
+    const updateTimer = () => {
+      const difference = Math.max(0, targetDate - Date.now());
+
+      setTimeLeft({
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+        hours: Math.floor(
+          (difference / (1000 * 60 * 60)) % 24
+        ),
+        minutes: Math.floor(
+          (difference / (1000 * 60)) % 60
+        ),
+        seconds: Math.floor((difference / 1000) % 60),
+      });
+    };
+
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  // Automatically move to the next video when the current one ends
+  const handleVideoEnd = () => {
+    setActiveVideo((current) => (current + 1) % heroVideos.length);
+  };
+
   const reveal = {
     hidden: {
       opacity: 0,
-      y: reduceMotion ? 0 : 24,
+      y: reduceMotion ? 0 : 20,
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: reduceMotion ? 0 : 0.8,
+        duration: reduceMotion ? 0 : 0.7,
         ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   };
 
+  const timerItems = [
+    { label: "Days", value: timeLeft.days },
+    { label: "Hours", value: timeLeft.hours },
+    { label: "Minutes", value: timeLeft.minutes },
+    { label: "Seconds", value: timeLeft.seconds },
+  ];
+
   return (
-    <section
-      id="home"
-      className="relative isolate flex min-h-[720px] overflow-hidden bg-[#07070A] text-white md:min-h-[calc(100svh-20px)]"
-    >
-      {/* Background image */}
-      <div className="absolute inset-0 -z-30">
-        <Image
-          src="/images/hero-conference.png"
-          alt="Technology and business leaders gathered at a conference"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-      </div>
+    <>
+      <section
+        id="home"
+        className="relative isolate flex min-h-[850px] items-center justify-center overflow-hidden bg-[#101827] text-white md:min-h-[calc(100svh-20px)]"
+      >
+        {/* BACKGROUND VIDEO */}
+        <div className="absolute inset-0 -z-30 overflow-hidden bg-black">
 
-      {/* Cinematic image treatment */}
-      <div className="absolute inset-0 -z-20 bg-black/45" />
+          <AnimateVideo
+            src={heroVideos[activeVideo]}
+            onEnded={handleVideoEnd}
+            reducedMotion={!!reduceMotion}
+          />
 
-      <div className="absolute inset-0 -z-20 bg-gradient-to-b from-black/60 via-black/15 to-[#090510]" />
+        </div>
 
-      <div className="absolute inset-0 -z-20 bg-gradient-to-r from-black/65 via-black/20 to-transparent" />
+        {/* READABILITY OVERLAY */}
+        <div className="absolute inset-0 -z-20 bg-gradient-to-b from-black/40 via-black/20 to-black/65" />
 
-      {/* Subtle bottom color atmosphere */}
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-[45%] bg-gradient-to-t from-[#10081E]/95 via-[#10081E]/60 to-transparent" />
+        {/* MAIN CONTENT */}
+        <div className="container-edge relative z-10 flex w-full flex-col items-center px-5 pb-16 pt-32 text-center sm:pb-20">
 
-      {/* Content */}
-      <div className="container-edge relative flex w-full flex-col justify-end pb-8 pt-32 sm:pb-12 md:pb-14">
-        <div className="max-w-[1400px]">
-          {/* Event eyebrow */}
+          {/* EYEBROW */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="mb-5 flex items-center gap-3"
+            className="mb-7 flex items-center justify-center gap-3"
           >
-            <span className="h-px w-6 bg-blue-400" />
+            <span className="h-px w-8 bg-[#A78BFA]" />
 
-            <p className="text-xs font-medium tracking-wide text-white/85 sm:text-sm">
-              AI GRCS Summit India · 2027
-            </p>
+            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-white sm:text-sm">
+              India’s Executive AI Governance Forum
+            </span>
+
+            <span className="h-px w-8 bg-[#A78BFA]" />
           </motion.div>
 
-          {/* Main headline */}
+          {/* EVENT NAME */}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="mb-5 text-sm font-semibold uppercase tracking-[0.3em] text-[#D7C5FF]"
+          >
+            AI GRCS SUMMIT INDIA · 2027
+          </motion.p>
+
+          {/* HEADLINE */}
           <motion.h1
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="max-w-[1200px] text-[clamp(3.2rem,9.5vw,6rem)] font-medium leading-[0.86] tracking-[-0.075em]"
+            className="max-w-[1100px] text-5xl font-semibold leading-[1.05] tracking-[-0.055em] [text-shadow:0_2px_12px_rgba(0,0,0,0.35)] sm:text-6xl md:text-7xl lg:text-[88px]"
           >
             The Future of AI
             <br />
-
-            <span className="text-white/90">
-              Demands{" "}
-            </span>
-
-            <span className="bg-gradient-to-r from-white via-[#E5DDFD] to-[#B8A0FF] bg-clip-text text-transparent">
+            Demands{" "}
+            <span className="text-[#D7C5FF]">
               Accountability.
             </span>
           </motion.h1>
 
-          {/* Bottom information row */}
+          {/* DESCRIPTION */}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="mt-7 max-w-[680px] text-sm leading-7 text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.4)] sm:text-base md:text-lg"
+          >
+            Where global leaders shape the future of AI Governance,
+            Risk, Compliance and Security.
+            <br className="hidden sm:block" />
+            One summit. One conversation. A more accountable AI future.
+          </motion.p>
+
+          {/* EVENT INFORMATION */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="mt-8 grid gap-8 border-t border-white/20 pt-5 sm:mt-10 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.2fr_auto] lg:items-end"
+            className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4"
           >
-            {/* Date */}
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-white/45">
-                Date
-              </p>
-
-              <p className="mt-2 text-sm font-medium text-white/90">
-                21 January
-              </p>
-
-              <p className="text-sm text-white/65">2027</p>
+            <div className="flex items-center gap-2 text-sm text-white">
+              <CalendarDays size={17} className="text-[#D7C5FF]" />
+              Thursday, 21 January 2027
             </div>
 
-            {/* Location */}
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.18em] text-white/45">
-                Location
-              </p>
+            <span className="hidden h-4 w-px bg-white/60 sm:block" />
 
-              <p className="mt-2 text-sm font-medium text-white/90">
-                Mumbai, India
-              </p>
-
-              <p className="text-sm text-white/65">
-                Venue announcement coming soon
-              </p>
+            <div className="flex items-center gap-2 text-sm text-white">
+              <MapPin size={17} className="text-[#D7C5FF]" />
+              Mumbai, India
             </div>
 
-            {/* Description */}
-            {/* <div className="max-w-sm">
-              <p className="text-sm leading-6 text-white/70">
-                A gathering of leaders shaping the future of AI governance,
-                risk, compliance and security.
-              </p>
-            </div> */}
+            <span className="hidden h-4 w-px bg-white/60 sm:block" />
 
-            {/* CTA */}
-            <div className="flex flex-col gap-3 sm:items-start lg:items-end">
-              <Button
-                href="#registration"
-                variant="primary"
-                className="group flex h-12 w-full items-center justify-between rounded-sm bg-[#8650F5] px-5 text-sm font-medium text-white transition-all hover:bg-[#996BFF] sm:w-auto sm:min-w-[190px]"
-              >
-                Register Your Interest
-
-                <ArrowUpRight
-                  size={17}
-                  className="ml-4 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"
-                />
-              </Button>
-
-              {/* <a
-                href="#agenda"
-                className="text-xs text-white/50 transition-colors hover:text-white"
-              >
-                Explore the summit →
-              </a> */}
+            <div className="flex items-center gap-2 text-sm text-white">
+              <Users size={17} className="text-[#D7C5FF]" />
+              200+ Senior Leaders
             </div>
           </motion.div>
+
+          {/* COUNTDOWN */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="mt-11 w-full max-w-[540px]"
+          >
+            <div className="mb-4 flex items-center justify-center gap-2">
+              <Sparkles size={14} className="text-[#D7C5FF]" />
+
+              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white sm:text-xs">
+                The Summit Begins In
+              </p>
+
+              <Sparkles size={14} className="text-[#D7C5FF]" />
+            </div>
+
+            <div className="grid grid-cols-4 gap-2 sm:gap-4">
+              {timerItems.map((item) => (
+                <div
+                  key={item.label}
+                  className="border border-white/35 bg-black/10 px-2 py-4 backdrop-blur-sm sm:py-5"
+                >
+                  <div className="text-3xl font-semibold tabular-nums tracking-tight sm:text-4xl md:text-5xl">
+                    {String(item.value).padStart(2, "0")}
+                  </div>
+
+                  <p className="mt-2 text-[9px] uppercase tracking-[0.18em] text-white/90 sm:text-[10px]">
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* CTA BUTTONS */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="mt-10 flex w-full flex-col items-center justify-center gap-4 sm:w-auto sm:flex-row"
+          >
+            <button
+              type="button"
+              onClick={() => setActiveForm("sponsor")}
+              className="w-full bg-[#3E6BFF] px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white transition hover:bg-blue-700 sm:w-auto"
+            >
+              Become a Sponsor
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveForm("delegate")}
+              className="w-full border border-white/60 px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white transition hover:bg-white hover:text-[#0b0d12] sm:w-auto"
+            >
+              Become a Delegate
+            </button>
+          </motion.div>
+
+          {/* VIDEO INDICATORS */}
+          <div className="mt-10 flex items-center gap-2">
+            {heroVideos.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                aria-label={`Play background video ${index + 1}`}
+                onClick={() => setActiveVideo(index)}
+                className={`h-[3px] transition-all duration-300 ${
+                  activeVideo === index
+                    ? "w-9 bg-[#D7C5FF]"
+                    : "w-4 bg-white/40 hover:bg-white/80"
+                }`}
+              />
+            ))}
+          </div>
+
         </div>
+      </section>
 
-        {/* Bottom signature */}
-        {/* <div className="mt-10 hidden items-center justify-between border-t border-white/10 pt-4 md:flex">
-          <p className="text-[9px] uppercase tracking-[0.22em] text-white/35">
-            Governance · Risk · Compliance · Security
-          </p>
+      {/* FORM MODAL */}
+      <FormModal
+        type={activeForm}
+        onClose={() => setActiveForm(null)}
+      />
+    </>
+  );
+}
 
-          <p className="text-[9px] uppercase tracking-[0.22em] text-white/35">
-            Mumbai, India
-          </p>
-        </div> */}
-      </div>
-    </section>
+/* BACKGROUND VIDEO COMPONENT */
+function AnimateVideo({
+  src,
+  onEnded,
+  reducedMotion,
+}: {
+  src: string;
+  onEnded: () => void;
+  reducedMotion: boolean;
+}) {
+  return (
+    <motion.video
+      key={src}
+      autoPlay
+      muted
+      playsInline
+      preload="auto"
+      onEnded={onEnded}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 0.55 }}
+      transition={{
+        duration: reducedMotion ? 0 : 0.8,
+      }}
+      className="h-full w-full object-cover object-center"
+    >
+      <source src={src} type="video/mp4" />
+    </motion.video>
   );
 }

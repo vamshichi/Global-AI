@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+// @ts-expect-error Side-effect CSS imports are not declared by TypeScript.
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/500.css";
 import "@fontsource/inter/600.css";

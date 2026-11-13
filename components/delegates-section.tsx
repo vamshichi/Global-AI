@@ -1,128 +1,137 @@
 
 "use client";
 
-import Image from "next/image";
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { DelegateProfile } from "@/components/delegate-profile";
 import { IndustryMix } from "@/components/industry-mix";
-import { Users, ArrowDown } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+
+import FormModal, { type FormType } from "@/components/FormModal";
 
 export function DelegatesSection() {
   const reducedMotion = useReducedMotion();
+  const [activeForm, setActiveForm] = useState<FormType>(null);
+
+  const reveal = (delay = 0) => ({
+    initial: reducedMotion ? false : { opacity: 0, y: 22 },
+    whileInView: reducedMotion ? undefined : { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.2 },
+    transition: {
+      duration: 0.65,
+      delay,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  });
 
   return (
-    <section
-      id="delegates"
-      className="relative isolate overflow-hidden bg-[#080D17] py-24 text-white sm:py-32 lg:py-40"
-    >
-      {/* Background image */}
-      <Image
-        src="/images/delegate-profile.png"
-        alt="Conference delegates networking"
-        fill
-        priority={false}
-        sizes="100vw"
-        className="absolute inset-0 -z-20 object-cover object-center"
-      />
+    <>
+      <section
+        id="delegates"
+        className="overflow-hidden bg-white py-14 text-[#102A56] sm:py-16 lg:py-20"
+      >
+        <div className="container-edge">
 
-      {/* Image treatment */}
-      <div className="absolute inset-0 -z-10 bg-[#080D17]/90" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#080D17]/70 via-transparent to-[#080D17]" />
-
-      {/* Ambient light */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-40 top-20 -z-10 h-[500px] w-[500px] rounded-full bg-blue-500/[0.08] blur-[150px]"
-      />
-
-      <div className="container-edge relative z-10">
-        {/* Intro */}
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 24 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="mb-14 max-w-5xl lg:mb-20"
-        >
-          <div className="mb-6 flex items-center gap-3">
-            <span className="h-px w-8 bg-blue-400" />
-
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-blue-300">
-              The People Who Matter
-            </p>
-          </div>
-
-          <h2 className="text-[clamp(2.8rem,6vw,5.5rem)] font-medium leading-[0.98] tracking-[-0.055em]">
-            The right room.
-            <br />
-            <span className="text-white/45">
-              The right conversations.
-            </span>
-          </h2>
-
-          <div className="mt-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <p className="max-w-2xl text-base leading-8 text-white/60 sm:text-lg">
-              Meet the technology leaders, decision-makers, and innovators
-              navigating the future of AI governance, risk, compliance,
-              and security.
+          {/* Section Heading */}
+          <motion.div {...reveal()} className="mb-8">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
+              Who Attends
             </p>
 
-            <div className="flex shrink-0 items-center gap-3 text-xs uppercase tracking-[0.15em] text-white/40">
-              <Users className="h-5 w-5 text-blue-300" />
-              Executive Delegate Community
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <h2 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+                Meet the leaders
+                <span className="text-[#2866B5]">
+                  {" "}shaping AI.
+                </span>
+              </h2>
+
+              <p className="max-w-md text-sm leading-7 text-[#526B89]">
+                A gathering of senior decision-makers driving AI governance,
+                risk, compliance and security across industries.
+              </p>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Existing delegate components */}
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8 }}
-          className="relative"
-        >
-          <div className="border border-white/10 bg-[#080D17]/55 p-5 backdrop-blur-md sm:p-8 lg:p-10">
-            <DelegateProfile />
-          </div>
-        </motion.div>
-
-        {/* Industry mix */}
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 30 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, delay: 0.12 }}
-          className="mt-6 border border-white/10 bg-[#080D17]/55 p-5 backdrop-blur-md sm:p-8 lg:p-10"
-        >
-          <IndustryMix />
-        </motion.div>
-
-        {/* Closing note */}
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0 }}
-          whileInView={reducedMotion ? undefined : { opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between"
-        >
-          <p className="max-w-xl text-sm leading-6 text-white/40">
-            A carefully curated environment for meaningful enterprise
-            conversations and lasting professional relationships.
-          </p>
-
-          <a
-            href="#registration"
-            className="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-white/70 transition-colors hover:text-blue-300"
+          {/* Delegate Audience */}
+          <motion.div
+            {...reveal(0.08)}
+            className="border-y border-[#E2EAF3] py-6 sm:py-8"
           >
-            Join the delegate community
-            <ArrowDown
-              size={14}
-              className="transition-transform group-hover:translate-y-1"
-            />
-          </a>
-        </motion.div>
-      </div>
-    </section>
+            <h3 className="mb-5 text-lg font-semibold">
+              Expected Delegate Profile
+            </h3>
+
+            <DelegateProfile />
+          </motion.div>
+
+          {/* Industry Representation */}
+          <motion.div {...reveal(0.12)} className="mt-10">
+            <div className="mb-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#2866B5]">
+                Industry Representation
+              </p>
+
+              <h3 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+                One forum. Multiple industries.
+              </h3>
+
+              <p className="mt-2 max-w-xl text-sm leading-7 text-[#526B89]">
+                Explore the sectors contributing to the AI governance
+                conversation.
+              </p>
+            </div>
+
+            <motion.div
+              whileHover={
+                reducedMotion ? undefined : { y: -3 }
+              }
+              transition={{ duration: 0.3 }}
+              className="border border-[#E2EAF3] bg-[#F8FAFD] p-4 transition-shadow duration-300 hover:shadow-lg hover:shadow-[#102A56]/5 sm:p-7"
+            >
+              <IndustryMix />
+            </motion.div>
+          </motion.div>
+
+          {/* Delegate CTA */}
+          <motion.div
+            {...reveal(0.18)}
+            className="mt-8 flex flex-col gap-4 border-t border-[#E2EAF3] pt-6 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <h3 className="text-lg font-semibold">
+                Join the conversation.
+              </h3>
+
+              <p className="mt-1 text-sm text-[#526B89]">
+                Connect with leaders shaping the future of responsible AI.
+              </p>
+            </div>
+
+            <motion.button
+              type="button"
+              onClick={() => setActiveForm("delegate")}
+              whileHover={
+                reducedMotion ? undefined : { y: -3 }
+              }
+              whileTap={
+                reducedMotion ? undefined : { scale: 0.97 }
+              }
+              className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 bg-[#174B89] px-6 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#102A56]"
+            >
+              Become a Delegate
+              <ArrowUpRight size={16} />
+            </motion.button>
+          </motion.div>
+
+        </div>
+      </section>
+
+      {/* Delegate Registration Modal */}
+      <FormModal
+        type={activeForm}
+        onClose={() => setActiveForm(null)}
+      />
+    </>
   );
 }

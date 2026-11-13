@@ -8,33 +8,48 @@ import { navLinks } from "@/data/nav";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+
 import PartnershipEnquiry from "@/components/PartnershipEnquiry";
 import GeneralContact from "@/components/GeneralContact";
 
-type PopupType = "partnership" | "contact" | null;
+type PopupType = "sponsor" | "contact" | null;
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [popup, setPopup] = useState<PopupType>(null);
 
+  // Navbar scroll effect
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
 
     onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
 
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
+  // Prevent background scrolling while popup is open
   useEffect(() => {
-    document.body.style.overflow = popup ? "hidden" : "";
+    if (popup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
 
     return () => {
       document.body.style.overflow = "";
     };
   }, [popup]);
 
+  // Close popup and mobile menu with Escape
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -44,20 +59,28 @@ export function Navbar() {
     };
 
     window.addEventListener("keydown", handleEscape);
-    return () => window.removeEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
   }, []);
 
+  // Open Contact Form
   const openContact = () => {
     setOpen(false);
     setPopup("contact");
   };
 
+  // Open Become a Sponsor Form
   const openPartnership = () => {
     setOpen(false);
-    setPopup("partnership");
+    setPopup("sponsor");
   };
 
-  const closePopup = () => setPopup(null);
+  // Close Popup
+  const closePopup = () => {
+    setPopup(null);
+  };
 
   return (
     <>
@@ -81,6 +104,7 @@ export function Navbar() {
             href="#home"
             aria-label="Global AI GRCS Summit home"
             className="relative z-10 flex shrink-0 items-center"
+            onClick={() => setOpen(false)}
           >
             <Image
               src="/logo.png"
@@ -117,7 +141,7 @@ export function Navbar() {
               onClick={openPartnership}
               className="text-xs font-medium text-white/60 transition-colors hover:text-white"
             >
-              Partner With Us
+              Become a Sponsor
             </button>
 
             <button
@@ -126,6 +150,7 @@ export function Navbar() {
               className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-white px-5 py-3 text-xs font-semibold text-black transition-all duration-300 hover:bg-[#DCE5FF]"
             >
               <span>Contact Us</span>
+
               <ArrowUpRight
                 size={15}
                 className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
@@ -152,7 +177,10 @@ export function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                duration: 0.35,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className="overflow-hidden border-t border-white/[0.08] bg-[#05070B]/95 backdrop-blur-2xl xl:hidden"
             >
               <div className="flex flex-col px-6 pb-8 pt-5 md:px-10">
@@ -167,6 +195,7 @@ export function Navbar() {
                     className="group flex items-center justify-between border-b border-white/[0.07] py-4 text-lg font-medium text-white/80 transition hover:text-white"
                   >
                     {link.label}
+
                     <ArrowUpRight
                       size={17}
                       className="text-white/30 transition group-hover:text-white"
@@ -189,7 +218,7 @@ export function Navbar() {
                     onClick={openPartnership}
                     className="py-3 text-sm text-white/60 transition hover:text-white"
                   >
-                    Partnership Enquiry
+                    Become a Sponsor
                   </button>
                 </div>
               </div>
@@ -198,7 +227,7 @@ export function Navbar() {
         </AnimatePresence>
       </header>
 
-      {/* CONTACT / PARTNERSHIP POPUP */}
+      {/* CONTACT / SPONSOR POPUP */}
       <AnimatePresence>
         {popup && (
           <motion.div
@@ -207,9 +236,12 @@ export function Navbar() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl"
             onMouseDown={(event) => {
-              if (event.target === event.currentTarget) closePopup();
+              if (event.target === event.currentTarget) {
+                closePopup();
+              }
             }}
           >
+            {/* CLOSE BUTTON */}
             <button
               type="button"
               onClick={closePopup}
@@ -219,26 +251,41 @@ export function Navbar() {
               <X size={20} />
             </button>
 
+            {/* POPUP CONTENT */}
             <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.98 }}
+              initial={{
+                opacity: 0,
+                y: 30,
+                scale: 0.98,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                scale: 1,
+              }}
+              exit={{
+                opacity: 0,
+                y: 20,
+                scale: 0.98,
+              }}
               transition={{ duration: 0.35 }}
               className="absolute inset-0 overflow-y-auto bg-[#080A10] lg:inset-x-[5vw] lg:bottom-[3vh] lg:top-[3vh] lg:border lg:border-white/10"
             >
+              {/* POPUP HEADER */}
               <div className="sticky top-0 z-20 border-b border-white/10 bg-[#080A10]/90 px-6 py-5 backdrop-blur-xl md:px-10">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#6485FF]">
                   Global AI GRCS Summit India
                 </p>
 
                 <p className="mt-2 text-sm text-white/60">
-                  {popup === "partnership"
-                    ? "Partnership enquiry"
-                    : "General enquiry"}
+                  {popup === "sponsor"
+                    ? "Become a Sponsor"
+                    : "General Enquiry"}
                 </p>
               </div>
 
-              {popup === "partnership" ? (
+              {/* FORM COMPONENT */}
+              {popup === "sponsor" ? (
                 <PartnershipEnquiry />
               ) : (
                 <GeneralContact />

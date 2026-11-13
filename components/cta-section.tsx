@@ -1,118 +1,173 @@
 
 "use client";
 
-import { motion } from "framer-motion";
-import { ArrowUpRight, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
+
+import FormModal, { type FormType } from "@/components/FormModal";
 
 export function CtaSection() {
+  const reducedMotion = useReducedMotion();
+  const [activeForm, setActiveForm] = useState<FormType>(null);
+
+  const reveal = (delay = 0) => ({
+    initial: reducedMotion ? false : { opacity: 0, y: 24 },
+    whileInView: reducedMotion ? undefined : { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.2 },
+    transition: {
+      duration: 0.7,
+      delay,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  });
+
+  const actions: {
+    label: string;
+    type: Exclude<FormType, null>;
+    description: string;
+    primary: boolean;
+  }[] = [
+    {
+      label: "Become a Sponsor",
+      type: "sponsor",
+      description: "Position your brand at the centre of AI leadership.",
+      primary: true,
+    },
+    {
+      label: "Become a Delegate",
+      type: "delegate",
+      description: "Join the conversations shaping responsible AI.",
+      primary: false,
+    },
+    {
+      label: "Become a Speaker",
+      type: "speaker",
+      description: "Share your expertise with industry leaders.",
+      primary: false,
+    },
+  ];
+
   return (
-    <section
-      className="relative isolate overflow-hidden border-t border-white/10 bg-[#080D17] py-32 lg:py-44"
-    >
-      {/* Background grid */}
-      <div className="pointer-events-none absolute inset-0 field-grid opacity-[0.18]" />
+    <>
+      <section className="relative overflow-hidden border-t border-[#DCE7F5] bg-[#102A56] py-20 text-white sm:py-28 lg:py-36">
 
-      {/* Ambient glow */}
-      <motion.div
-        className="pointer-events-none absolute -left-[15%] top-1/2 h-[600px] w-[600px] -translate-y-1/2 rounded-full bg-blue-500/[0.12] blur-[150px]"
-        animate={{ opacity: [0.35, 0.65, 0.35], scale: [1, 1.12, 1] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-      />
+        {/* Background Detail */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-40 -top-40 h-[550px] w-[550px] rounded-full border border-white/[0.07]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-20 -top-20 h-[350px] w-[350px] rounded-full border border-white/[0.07]"
+        />
 
-      <div className="pointer-events-none absolute right-[-10%] top-[-20%] h-[500px] w-[500px] rounded-full border border-white/[0.04]" />
-      <div className="pointer-events-none absolute right-[-5%] top-[-10%] h-[350px] w-[350px] rounded-full border border-white/[0.04]" />
+        <div className="container-edge relative z-10">
 
-      <div className="container-edge relative">
-        <div className="mx-auto max-w-5xl text-center">
-          {/* Eyebrow */}
+          {/* Heading */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 flex items-center justify-center gap-3"
+            {...reveal()}
+            className="mx-auto max-w-4xl text-center"
           >
-            <span className="h-px w-8 bg-blue-300/70" />
-            <span className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-200">
-              The Conversation Starts Here
-            </span>
-            <span className="h-px w-8 bg-blue-300/70" />
+            <div className="mb-7 flex items-center justify-center gap-3">
+              <span className="h-px w-8 bg-[#C5A46D]" />
+
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#D9BD8C]">
+                Be Part of the Conversation
+              </p>
+
+              <span className="h-px w-8 bg-[#C5A46D]" />
+            </div>
+
+            <h2 className="text-[clamp(2.8rem,6.5vw,6rem)] font-medium leading-[1.02] tracking-[-0.055em]">
+              The future of AI
+              <br />
+              <span className="text-[#9DBCE2]">
+                needs your voice.
+              </span>
+            </h2>
+
+            <p className="mx-auto mt-7 max-w-xl text-sm leading-7 text-white/70 sm:text-base">
+              Connect with the leaders defining the next era of AI governance,
+              risk, compliance and security.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-medium uppercase tracking-[0.16em] text-white/65 sm:text-xs">
+              <span>21 January 2027</span>
+              <span className="h-1 w-1 rounded-full bg-[#C5A46D]" />
+              <span>Mumbai, India</span>
+              <span className="h-1 w-1 rounded-full bg-[#C5A46D]" />
+              <span>AI GRCS Summit India</span>
+            </div>
           </motion.div>
 
-          {/* Main headline */}
-          <motion.h2
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto max-w-5xl text-[clamp(2.8rem,7vw,6.8rem)] font-medium leading-[0.98] tracking-[-0.05em] text-white"
-          >
-            Can we trust the AI
-            <br />
-            <span className="text-white/40">
-              we’re about to scale?
-            </span>
-          </motion.h2>
+          {/* Three Action Buttons */}
+          <div className="mx-auto mt-14 grid max-w-5xl gap-4 md:grid-cols-3 lg:mt-16">
+            {actions.map((action, index) => (
+              <motion.button
+                key={action.label}
+                type="button"
+                onClick={() => setActiveForm(action.type)}
+                {...reveal(index * 0.1)}
+                whileHover={
+                  reducedMotion ? undefined : { y: -6 }
+                }
+                whileTap={
+                  reducedMotion ? undefined : { scale: 0.97 }
+                }
+                className={`group flex min-h-[170px] w-full flex-col justify-between border p-6 text-left transition-all duration-300 sm:p-7 ${
+                  action.primary
+                    ? "border-[#D9BD8C] bg-[#D9BD8C] text-[#102A56] hover:bg-[#E8D3AB]"
+                    : "border-white/20 bg-white/[0.04] text-white hover:border-white/50 hover:bg-white/[0.09]"
+                }`}
+              >
+                <div className="flex w-full items-center justify-between gap-3">
+                  <span className="text-base font-semibold tracking-tight sm:text-lg">
+                    {action.label}
+                  </span>
 
-          {/* Supporting copy */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="mx-auto mt-7 max-w-xl text-base leading-7 text-white/55 sm:text-lg"
-          >
-            Join the leaders shaping the future of AI governance, risk,
-            compliance, and security.
-          </motion.p>
+                  <span
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 ${
+                      action.primary
+                        ? "border-[#102A56]/20"
+                        : "border-white/25"
+                    }`}
+                  >
+                    <ArrowUpRight size={17} />
+                  </span>
+                </div>
 
-          {/* Event metadata */}
+                <p
+                  className={`mt-7 max-w-[240px] text-xs leading-6 ${
+                    action.primary
+                      ? "text-[#102A56]/75"
+                      : "text-white/60"
+                  }`}
+                >
+                  {action.description}
+                </p>
+              </motion.button>
+            ))}
+          </div>
+
+          {/* Footer Note */}
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className="mx-auto mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-medium uppercase tracking-[0.16em] text-white/55 sm:text-sm"
+            {...reveal(0.3)}
+            className="mt-12 border-t border-white/15 pt-7 text-center"
           >
-            <span>21 January 2027</span>
-            <span className="hidden h-1 w-1 rounded-full bg-blue-300 sm:block" />
-            <span className="text-blue-200">Mumbai, India</span>
-            <span className="hidden h-1 w-1 rounded-full bg-blue-300 sm:block" />
-            <span>AI GRCS Summit India</span>
+            <p className="text-xs tracking-wide text-white/50">
+              Governance. Risk. Compliance. Security.
+            </p>
           </motion.div>
 
-          {/* CTA buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.35 }}
-            className="mt-12 flex flex-wrap items-center justify-center gap-4"
-          >
-            <Button href="#registration" variant="primary">
-              Reserve Your Seat
-              <ArrowUpRight className="ml-2 h-4 w-4" />
-            </Button>
-
-            <Button href="#insights" variant="secondary">
-              Explore the Summit Brief
-            </Button>
-          </motion.div>
-
-          {/* Trust note */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            className="mt-10 flex items-center justify-center gap-2 text-xs text-white/35"
-          >
-            <ShieldCheck className="h-4 w-4" />
-            <span>Built for leaders shaping responsible AI.</span>
-          </motion.div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Popup Forms */}
+      <FormModal
+        type={activeForm}
+        onClose={() => setActiveForm(null)}
+      />
+    </>
   );
 }

@@ -13,6 +13,8 @@ import { InsightsSection } from "@/components/insights-section";
 import { CtaSection } from "@/components/cta-section";
 import { RegistrationSection } from "@/components/registration-section";
 import { Footer } from "@/components/footer";
+import { SponsorshipBenefits } from "@/components/SponsorshipBenefits";
+import { MediaPartners } from "@/components/MediaPartners";
 
 export default function Home() {
   return (
@@ -24,14 +26,17 @@ export default function Home() {
         <Stats />
         <ExperiencesSection />
         <WhyAttend />
+        
         <Agenda />
+        <MediaPartners />
+        <SponsorshipBenefits />
         {/* <SpeakersSection /> */}
-        <PartnerSection />
+        {/* <PartnerSection /> */}
         <DelegatesSection />
-        <VenueSection />
+        {/* <VenueSection /> */}
         {/* <InsightsSection /> */}
         <CtaSection />
-        <RegistrationSection />
+        {/* <RegistrationSection /> */}
       </main>
       <Footer />
     </>

@@ -1,281 +1,181 @@
 
 "use client";
 
-import { useEffect } from "react";
-import {
-  motion,
-  useReducedMotion,
-  useMotionValue,
-  useTransform,
-  animate,
-} from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const industryData = [
-  { name: "Banking & Financial Services", value: 28, color: "#C9A96E" },
-  { name: "Technology & IT", value: 22, color: "#6D9FE8" },
-  { name: "Healthcare & Pharma", value: 15, color: "#80B9AD" },
-  { name: "Telecom & Media", value: 12, color: "#A48BCB" },
-  { name: "Manufacturing & Energy", value: 13, color: "#D69B78" },
-  { name: "Government & Others", value: 10, color: "#8794A8" },
+  { name: "Banking & Financial Services", value: 28, color: "#173F75" },
+  { name: "Technology & IT", value: 22, color: "#397BC0" },
+  { name: "Healthcare & Pharma", value: 15, color: "#79A9D8" },
+  { name: "Manufacturing & Energy", value: 13, color: "#C5A46D" },
+  { name: "Telecom & Media", value: 12, color: "#6C9F9A" },
+  { name: "Government & Others", value: 10, color: "#A8BBD0" },
 ];
 
-const radius = 96;
-const strokeWidth = 28;
-const circumference = 2 * Math.PI * radius;
+const polarPoint = (
+  cx: number,
+  cy: number,
+  radius: number,
+  angle: number
+) => {
+  const radians = ((angle - 90) * Math.PI) / 180;
 
-// Animated percentage counter
-function AnimatedCounter({
-  value,
-  duration = 1.8,
-  reducedMotion,
-}: {
-  value: number;
-  duration?: number;
-  reducedMotion: boolean | null;
-}) {
-  const count = useMotionValue(0);
+  return {
+    x: cx + radius * Math.cos(radians),
+    y: cy + radius * Math.sin(radians),
+  };
+};
 
-  const rounded = useTransform(
-    count,
-    (latest) => `${Math.round(latest)}%`
-  );
+const createSlice = (startAngle: number, endAngle: number) => {
+  const center = 160;
+  const radius = 126;
 
-  useEffect(() => {
-    if (reducedMotion) {
-      count.set(value);
-      return;
-    }
+  const start = polarPoint(center, center, radius, startAngle);
+  const end = polarPoint(center, center, radius, endAngle);
 
-    const controls = animate(count, value, {
-      duration,
-      ease: [0.16, 1, 0.3, 1],
-    });
+  const largeArc = endAngle - startAngle > 180 ? 1 : 0;
 
-    return () => controls.stop();
-  }, [value, duration, count, reducedMotion]);
-
-  return <motion.span>{rounded}</motion.span>;
-}
+  return [
+    `M ${center} ${center}`,
+    `L ${start.x} ${start.y}`,
+    `A ${radius} ${radius} 0 ${largeArc} 1 ${end.x} ${end.y}`,
+    "Z",
+  ].join(" ");
+};
 
 export function IndustryMix() {
   const reducedMotion = useReducedMotion();
 
-  let cumulative = 0;
+  let currentAngle = 0;
+
+  const slices = industryData.map((industry) => {
+    const startAngle = currentAngle;
+    const endAngle = currentAngle + (industry.value / 100) * 360;
+
+    currentAngle = endAngle;
+
+    return {
+      ...industry,
+      startAngle,
+      endAngle,
+      path: createSlice(startAngle, endAngle),
+    };
+  });
 
   return (
-    <section className="w-full">
+    <div>
       {/* Heading */}
-      <motion.div
-        initial={reducedMotion ? false : { opacity: 0, y: 20 }}
-        whileInView={
-          reducedMotion ? undefined : { opacity: 1, y: 0 }
-        }
-        viewport={{ once: true }}
-        transition={{ duration: 0.7 }}
-        className="mb-10"
-      >
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.25em] text-blue-300">
-          Industry Representation
+      <div className="mb-8 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#2866B5]">
+            Industry Representation
+          </p>
+
+          <h3 className="mt-3 text-2xl font-medium tracking-tight text-[#102A56] sm:text-3xl">
+            A cross-industry perspective.
+          </h3>
+        </div>
+
+        <p className="text-xs text-[#7290B3]">
+          Delegate industry mix · %
         </p>
+      </div>
 
-        <h3 className="text-2xl font-medium tracking-tight text-white sm:text-3xl">
-          A cross-industry perspective
-        </h3>
+      {/* Chart and legend */}
+      <div className="grid items-center gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
 
-        <p className="mt-3 max-w-xl text-sm leading-7 text-white/50">
-          Connect with leaders across the industries shaping enterprise AI
-          governance, risk, compliance and security.
-        </p>
-      </motion.div>
-
-      <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr]">
-
-        {/* Circular Donut Chart */}
+        {/* Pie chart */}
         <motion.div
-          initial={reducedMotion ? false : { opacity: 0, scale: 0.85 }}
-          whileInView={
-            reducedMotion ? undefined : { opacity: 1, scale: 1 }
-          }
+          initial={reducedMotion ? false : { opacity: 0, scale: 0.94 }}
+          whileInView={reducedMotion ? undefined : { opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          transition={{
-            duration: 0.9,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="relative mx-auto h-[300px] w-full max-w-[380px]"
+          transition={{ duration: 0.8 }}
+          className="flex justify-center"
         >
           <svg
-            viewBox="0 0 240 240"
-            className="h-full w-full overflow-visible"
-            aria-label="Industry mix donut chart"
+            viewBox="0 0 320 320"
             role="img"
+            aria-label="Pie chart showing delegate representation across six industries"
+            className="h-auto w-full max-w-[340px] overflow-visible"
           >
-            {/* Background Circle */}
+            {/* Outer circular outline */}
             <circle
-              cx="120"
-              cy="120"
-              r={radius}
+              cx="160"
+              cy="160"
+              r="129"
               fill="none"
-              stroke="rgba(255,255,255,0.08)"
-              strokeWidth={strokeWidth}
+              stroke="#DCE7F5"
+              strokeWidth="1.5"
             />
 
-            {/* Animated Industry Segments */}
-            {industryData.map((industry, index) => {
-              const dash =
-                (industry.value / 100) * circumference;
-
-              const offset =
-                -(cumulative / 100) * circumference;
-
-              cumulative += industry.value;
-
-              return (
-                <motion.circle
-                  key={industry.name}
-                  cx="120"
-                  cy="120"
-                  r={radius}
-                  fill="none"
-                  stroke={industry.color}
-                  strokeWidth={strokeWidth}
-                  strokeLinecap="round"
-                  strokeDasharray={`${dash} ${circumference - dash}`}
-                  strokeDashoffset={offset}
-                  transform="rotate(-90 120 120)"
-                  initial={
-                    reducedMotion
-                      ? false
-                      : {
-                          opacity: 0,
-                          strokeDasharray: `0 ${circumference}`,
-                        }
-                  }
-                  whileInView={
-                    reducedMotion
-                      ? undefined
-                      : {
-                          opacity: 1,
-                          strokeDasharray: `${dash} ${circumference - dash}`,
-                        }
-                  }
-                  viewport={{ once: true }}
-                  transition={{
-                    opacity: { duration: 0.3 },
-                    strokeDasharray: {
-                      duration: 1.4,
-                      delay: 0.2 + index * 0.12,
-                      ease: [0.16, 1, 0.3, 1],
-                    },
-                  }}
-                />
-              );
-            })}
-          </svg>
-
-          {/* Animated Center Counter */}
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <motion.span
-              initial={reducedMotion ? false : { opacity: 0, scale: 0.7 }}
-              whileInView={
-                reducedMotion
-                  ? undefined
-                  : { opacity: 1, scale: 1 }
-              }
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.6,
-                delay: 0.3,
-              }}
-              className="text-4xl font-semibold tracking-tight text-white tabular-nums"
-            >
-              <AnimatedCounter
-                value={industryData.reduce(
-                  (total, item) => total + item.value,
-                  0
-                )}
-                reducedMotion={reducedMotion}
+            {/* Individual pie slices */}
+            {slices.map((slice, index) => (
+              <motion.path
+                key={slice.name}
+                d={slice.path}
+                fill={slice.color}
+                stroke="#F8FAFD"
+                strokeWidth="3"
+                strokeLinejoin="round"
+                initial={
+                  reducedMotion
+                    ? false
+                    : { opacity: 0, scale: 0.96 }
+                }
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.5,
+                  delay: reducedMotion ? 0 : index * 0.1,
+                }}
+                style={{ transformOrigin: "160px 160px" }}
               />
-            </motion.span>
+            ))}
 
-            <motion.span
-              initial={reducedMotion ? false : { opacity: 0 }}
-              whileInView={
-                reducedMotion ? undefined : { opacity: 1 }
-              }
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="mt-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/40"
-            >
-              Industry Mix
-            </motion.span>
-          </div>
+            {/* Fine outer edge */}
+            <circle
+              cx="160"
+              cy="160"
+              r="129"
+              fill="none"
+              stroke="#B8CBE0"
+              strokeWidth="1"
+            />
+          </svg>
         </motion.div>
 
-        {/* Industry Legend */}
-        <div className="space-y-5">
+        {/* Legend */}
+        <div className="space-y-0">
           {industryData.map((industry, index) => (
             <motion.div
               key={industry.name}
-              initial={
-                reducedMotion ? false : { opacity: 0, x: 20 }
-              }
-              whileInView={
-                reducedMotion
-                  ? undefined
-                  : { opacity: 1, x: 0 }
-              }
+              initial={reducedMotion ? false : { opacity: 0, x: 15 }}
+              whileInView={reducedMotion ? undefined : { opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{
-                duration: 0.6,
-                delay: 0.25 + index * 0.1,
-                ease: [0.16, 1, 0.3, 1],
+                duration: 0.45,
+                delay: reducedMotion ? 0 : index * 0.07,
               }}
-              className="group flex items-center justify-between gap-4 border-b border-white/[0.08] pb-4"
+              className="flex items-center justify-between gap-4 border-b border-[#DCE7F5] py-4 first:border-t"
             >
-              <div className="flex items-center gap-3">
-                <motion.span
-                  initial={
-                    reducedMotion ? false : { scale: 0 }
-                  }
-                  whileInView={
-                    reducedMotion ? undefined : { scale: 1 }
-                  }
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 0.4,
-                    delay: 0.35 + index * 0.1,
-                  }}
-                  className="h-2.5 w-2.5 shrink-0 rounded-full"
+              <div className="flex min-w-0 items-center gap-3">
+                <span
+                  className="h-3 w-3 shrink-0"
                   style={{ backgroundColor: industry.color }}
                 />
 
-                <span className="text-sm text-white/65 transition-colors duration-300 group-hover:text-white">
+                <span className="text-sm font-medium text-[#34577F]">
                   {industry.name}
                 </span>
               </div>
 
-              <motion.span
-                initial={
-                  reducedMotion ? false : { opacity: 0, y: 8 }
-                }
-                whileInView={
-                  reducedMotion
-                    ? undefined
-                    : { opacity: 1, y: 0 }
-                }
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.4 + index * 0.1,
-                }}
-                className="text-sm font-semibold tabular-nums text-white"
-              >
+              <span className="shrink-0 text-base font-semibold tabular-nums text-[#102A56]">
                 {industry.value}%
-              </motion.span>
+              </span>
             </motion.div>
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }
