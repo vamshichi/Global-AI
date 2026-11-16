@@ -1,19 +1,10 @@
+
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure: process.env.SMTP_SECURE === "true",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
-
-function escapeHtml(value: string) {
+function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => {
     const entities: Record<string, string> = {
       "&": "&amp;",
@@ -27,164 +18,317 @@ function escapeHtml(value: string) {
   });
 }
 
+function cleanString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function cleanStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+const allowedSolutions = [
+  "AI Governance",
+  "AI Security",
+  "Cybersecurity",
+  "Enterprise IT Security",
+  "IT Audit & Assurance",
+  "GRC Solutions",
+  "Regulatory & Compliance Audits",
+  "Model Risk",
+  "Data Privacy/DPDP Compliance",
+  "Agentic AI",
+  "Others",
+];
+
+const allowedHearAboutOptions = [
+  "Scrolled through the event page",
+  "LinkedIn",
+  "Received an Email Invitation",
+  "Referred by your colleague / Peer",
+  "Heard from one of our friendly agents",
+  "Social Media",
+  "Others",
+];
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const {
-      firstName,
-      lastName,
-      email,
-      mobile,
-      jobTitle,
-      organisation,
-      industry,
-      seniority,
-      interests,
-      attendance,
-      requirements,
-      heardFrom,
-      consent,
-      marketing,
-    } = body;
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid registration submission.",
+        },
+        { status: 400 }
+      );
+    }
 
-    // Validate required fields on the server.
-    const requiredFields = [
+    // New delegate form fields
+    const firstName = cleanString(body.firstName);
+    const lastName = cleanString(body.lastName);
+    const title = cleanString(body.title);
+    const organisation = cleanString(body.organisation);
+
+    const solutionsInterestedIn = cleanStringArray(
+      body.solutionsInterestedIn
+    );
+
+    const heardFrom = cleanString(body.heardFrom);
+    const confirmation = body.confirmation;
+
+    // Validate required fields
+    if (
+      !firstName ||
+      !lastName ||
+      !title ||
+      !organisation ||
+      !heardFrom ||
+      confirmation !== true
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please complete all required fields and confirm your submission.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Validate field lengths
+    const fields = [
       firstName,
       lastName,
-      email,
-      mobile,
-      jobTitle,
+      title,
       organisation,
-      industry,
-      seniority,
-      attendance,
       heardFrom,
+      ...solutionsInterestedIn,
     ];
 
     if (
-      !requiredFields.every(
-        (value) => typeof value === "string" && value.trim().length > 0
-      ) ||
-      consent !== true ||
-      !Array.isArray(interests) ||
-      !interests.every((item) => typeof item === "string") ||
-      (requirements !== undefined && typeof requirements !== "string") ||
-      (marketing !== undefined && typeof marketing !== "boolean")
-    ) {
-      return NextResponse.json(
-        { success: false, message: "Please provide valid registration details and consent." },
-        { status: 400 }
-      );
-    }
-
-    if (
-      email.length > 254 ||
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+      fields.some((value) => value.length > 500) ||
       firstName.length > 100 ||
       lastName.length > 100 ||
-      mobile.length > 30 ||
-      jobTitle.length > 150 ||
-      organisation.length > 200 ||
-      interests.length > 20 ||
-      requirements?.length > 2000
+      title.length > 150 ||
+      organisation.length > 200
     ) {
       return NextResponse.json(
-        { success: false, message: "One or more fields are invalid or too long." },
+        {
+          success: false,
+          message: "One or more fields are invalid or too long.",
+        },
         { status: 400 }
       );
     }
 
-    const safe = (value: string) => escapeHtml(value.trim());
-
-    const fullName = `${firstName.trim()} ${lastName.trim()}`;
-    const interestsText = interests.length
-      ? interests.map((item: string) => safe(item)).join(", ")
-      : "Not specified";
-
-    const teamEmail = process.env.TEAM_EMAIL;
-    const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
-
-    if (!teamEmail || !fromEmail || !process.env.SMTP_HOST ||
-        !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      throw new Error("Email configuration is incomplete.");
+    // Validate checkbox values
+    if (
+      solutionsInterestedIn.some(
+        (item) => !allowedSolutions.includes(item)
+      ) ||
+      heardFrom.length > 200 ||
+      !allowedHearAboutOptions.includes(heardFrom)
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid selection. Please refresh the page and try again.",
+        },
+        { status: 400 }
+      );
     }
 
-    // 1. Notify the event team.
-    await transporter.sendMail({
-      from: `"Global AI GRCS Summit" <${fromEmail}>`,
-      to: teamEmail,
-      replyTo: email,
-      subject: `New Delegate Registration — ${fullName}`,
-      html: `
-        <div style="font-family:Arial,sans-serif;color:#222;max-width:650px;margin:auto">
-          <h2 style="color:#3E6BFF">New Delegate Registration</h2>
-          <p>A new registration interest has been submitted for
-          <strong>Global AI GRCS Summit India 2026</strong>.</p>
+    // SMTP configuration
+    const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+    const smtpPort = Number(process.env.SMTP_PORT || 587);
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+    const fromEmail = process.env.SMTP_FROM || smtpUser;
+    const teamEmail =
+      process.env.TEAM_EMAIL || "enquiry@confexmeet.com";
 
-          <table style="width:100%;border-collapse:collapse">
-            ${[
-              ["Name", fullName],
-              ["Email", email],
-              ["Mobile", mobile],
-              ["Job Title", jobTitle],
-              ["Organisation", organisation],
-              ["Industry", industry],
-              ["Seniority", seniority],
-              ["Interests", interestsText],
-              ["Attendance", attendance],
-              ["Dietary / Accessibility Requirements", requirements || "None provided"],
-              ["Heard About Summit", heardFrom],
-              ["Marketing Consent", marketing ? "Yes" : "No"],
-            ]
-              .map(
-                ([label, value]) => `
-                  <tr>
-                    <td style="padding:10px;border:1px solid #ddd;font-weight:bold">${safe(label)}</td>
-                    <td style="padding:10px;border:1px solid #ddd">${safe(String(value))}</td>
-                  </tr>`
-              )
-              .join("")}
-          </table>
-          <p style="margin-top:24px;color:#666">
-            Event: 21 JANUARY 2027<br/>
-            Venue: Mumbai India
-          </p>
-        </div>
-      `,
+    if (!smtpUser || !smtpPass || !fromEmail || !teamEmail) {
+      console.error(
+        "Delegate registration: SMTP configuration is incomplete."
+      );
+
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Email service is not configured.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure:
+        process.env.SMTP_SECURE === "true" || smtpPort === 465,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
     });
 
-    // 2. Send a confirmation to the delegate.
+    const safe = (value: string) => escapeHtml(value);
+
+    const fullName = `${firstName} ${lastName}`;
+
+    const solutionsText = solutionsInterestedIn.length
+      ? solutionsInterestedIn.map((item) => `- ${item}`).join("\n")
+      : "Not specified";
+
+    const solutionsHtml = solutionsInterestedIn.length
+      ? solutionsInterestedIn
+          .map((item) => `<li>${safe(item)}</li>`)
+          .join("")
+      : "<li>Not specified</li>";
+
+    const submittedAt = new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
+
+    // Send registration notification to the event team
     await transporter.sendMail({
-      from: `"Global AI GRCS Summit India 2026" <${fromEmail}>`,
-      to: email,
-      subject: "We have received your registration interest",
+      from: `"AI GRCS Summit India 2027" <${fromEmail}>`,
+      to: teamEmail,
+      subject: `New Delegate Invitation — ${fullName}`,
+
+      text: `
+NEW DELEGATE INVITATION
+
+PERSONAL DETAILS
+
+First Name: ${firstName}
+Last Name: ${lastName}
+Full Name: ${fullName}
+Title: ${title}
+Organisation: ${organisation}
+
+SOLUTIONS INTERESTED IN
+
+${solutionsText}
+
+HOW DID YOU HEAR ABOUT THE SUMMIT?
+
+${heardFrom}
+
+CONFIRMATION
+
+Confirmed: Yes
+
+SUBMISSION DETAILS
+
+Submitted At: ${submittedAt}
+
+EVENT DETAILS
+
+AI GRCS Summit India 2027
+Date: 21 January 2027
+Location: Mumbai, India
+      `.trim(),
+
       html: `
-        <div style="font-family:Arial,sans-serif;color:#222;max-width:600px;margin:auto;line-height:1.7">
-          <h2 style="color:#3E6BFF">Thank you, ${safe(firstName)}!</h2>
-          <p>We have received your registration interest for
-          <strong>Global AI GRCS Summit India 2026</strong>.</p>
-          <p>Our team will review your details and contact you regarding
-          eligibility and the next steps.</p>
-          <p><strong>Date:</strong> 21 JANUARY 2027<br/>
-          <strong>Venue:</strong>Mumbai India</p>
-          <p>We look forward to connecting with you.</p>
-          <p>Regards,<br/>Global AI GRCS Summit Team</p>
+        <div style="font-family:Arial,sans-serif;color:#222;max-width:700px;margin:auto;line-height:1.6">
+
+          <div style="background:#102A56;padding:24px;color:#fff">
+            <h2 style="margin:0;color:#fff">
+              New Delegate Invitation
+            </h2>
+            <p style="margin:8px 0 0;color:#dbe6f5">
+              A new delegate invitation has been submitted through the website.
+            </p>
+          </div>
+
+          <div style="padding:24px">
+
+            <h3 style="color:#102A56">Personal Details</h3>
+
+            <table cellpadding="9" cellspacing="0" style="border-collapse:collapse;width:100%">
+              <tr>
+                <td style="border-bottom:1px solid #eee"><strong>First Name</strong></td>
+                <td style="border-bottom:1px solid #eee">${safe(firstName)}</td>
+              </tr>
+
+              <tr>
+                <td style="border-bottom:1px solid #eee"><strong>Last Name</strong></td>
+                <td style="border-bottom:1px solid #eee">${safe(lastName)}</td>
+              </tr>
+
+              <tr>
+                <td style="border-bottom:1px solid #eee"><strong>Title</strong></td>
+                <td style="border-bottom:1px solid #eee">${safe(title)}</td>
+              </tr>
+
+              <tr>
+                <td style="border-bottom:1px solid #eee"><strong>Organisation</strong></td>
+                <td style="border-bottom:1px solid #eee">${safe(organisation)}</td>
+              </tr>
+            </table>
+
+            <h3 style="color:#102A56;margin-top:28px">
+              Solutions Interested In
+            </h3>
+
+            <ul style="padding-left:22px">
+              ${solutionsHtml}
+            </ul>
+
+            <h3 style="color:#102A56;margin-top:28px">
+              How Did You Hear About the Summit?
+            </h3>
+
+            <div style="background:#f5f7fb;padding:16px;border-radius:8px">
+              ${safe(heardFrom)}
+            </div>
+
+            <h3 style="color:#102A56;margin-top:28px">
+              Confirmation
+            </h3>
+
+            <p>Confirmed: <strong>Yes</strong></p>
+
+            <p style="margin-top:24px">
+              <strong>Submitted At:</strong> ${safe(submittedAt)}
+            </p>
+
+            <hr style="border:none;border-top:1px solid #eee;margin:24px 0" />
+
+            <p style="color:#666;font-size:13px">
+              AI GRCS Summit India 2027<br/>
+              21 January 2027 · Mumbai, India
+            </p>
+
+          </div>
         </div>
       `,
     });
 
     return NextResponse.json(
-      { success: true, message: "Registration submitted successfully." },
+      {
+        success: true,
+        message: "Your delegate registration has been submitted successfully.",
+      },
       { status: 200 }
     );
+
   } catch (error) {
     console.error("Delegate registration email error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Unable to process your registration right now. Please try again.",
+        message:
+          "Unable to process your registration right now. Please try again later.",
       },
       { status: 500 }
     );

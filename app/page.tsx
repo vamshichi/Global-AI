@@ -30,7 +30,7 @@ export default function Home() {
         <Agenda />
         <MediaPartners />
         <SponsorshipBenefits />
-        {/* <SpeakersSection /> */}
+        <SpeakersSection />
         {/* <PartnerSection /> */}
         <DelegatesSection />
         {/* <VenueSection /> */}

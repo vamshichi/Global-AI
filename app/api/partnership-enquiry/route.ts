@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
-function escapeHtml(value: string) {
+function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => {
     const entities: Record<string, string> = {
       "&": "&amp;",
@@ -18,79 +18,120 @@ function escapeHtml(value: string) {
   });
 }
 
+function cleanString(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function cleanStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .filter((item): item is string => typeof item === "string")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const {
-      fullName,
-      email,
-      phone,
-      jobTitle,
-      company,
-      website,
-      organisationType,
-      partnershipInterest,
-      targetAudience,
-      meetingObjectives,
-      budgetRange,
-      additionalRequirements,
-      consent,
-    } = body;
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid form submission." },
+        { status: 400 }
+      );
+    }
+
+    // New sponsor form fields
+    const fullName = cleanString(body.fullName);
+    const companyName = cleanString(body.companyName);
+    const title = cleanString(body.title);
+    const phone = cleanString(body.phone);
+    const businessEmail = cleanString(body.businessEmail);
+    const companyWebsite = cleanString(body.companyWebsite);
+    const sponsorInterest = cleanStringArray(body.sponsorInterest);
+    const sponsorLevel = cleanStringArray(body.sponsorLevel);
+    const sponsorObjectives = cleanString(body.sponsorObjectives);
 
     // Validate required fields
     if (
-      !fullName?.trim() ||
-      !email?.trim() ||
-      !phone?.trim() ||
-      !jobTitle?.trim() ||
-      !company?.trim() ||
-      !organisationType ||
-      !partnershipInterest ||
-      consent !== true
+      !fullName ||
+      !companyName ||
+      !title ||
+      !phone ||
+      !businessEmail
     ) {
       return NextResponse.json(
         {
           success: false,
-          message: "Please complete all required fields and provide consent.",
+          message: "Please complete all required fields.",
         },
         { status: 400 }
       );
     }
 
+    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(email.trim())) {
+    if (!emailRegex.test(businessEmail)) {
       return NextResponse.json(
-        { success: false, message: "Please enter a valid email address." },
+        {
+          success: false,
+          message: "Please enter a valid business email address.",
+        },
         { status: 400 }
       );
     }
 
-    // Prevent excessively large submissions
+    // Validate field lengths
     const fields = [
       fullName,
-      email,
+      companyName,
+      title,
       phone,
-      jobTitle,
-      company,
-      website,
-      organisationType,
-      partnershipInterest,
-      targetAudience,
-      meetingObjectives,
-      budgetRange,
-      additionalRequirements,
+      businessEmail,
+      companyWebsite,
+      sponsorObjectives,
+      ...sponsorInterest,
+      ...sponsorLevel,
+    ];
+
+    if (fields.some((value) => value.length > 5000)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "One or more fields are too long.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Allow only the checkbox options defined by the form
+    const allowedInterests = [
+      "Exhibitor Booth",
+      "Thought Leadership / Speaking Slots",
+      "Logo & Branding",
+      "One-to-One Meetings",
+      "Workshops / Hackathons",
+    ];
+
+    const allowedLevels = [
+      "Title Partner",
+      "Platinum Partner",
+      "Gold Partner",
+      "Silver Partner",
+      "Exhibitor Partner",
     ];
 
     if (
-      fields.some(
-        (value) => typeof value !== "string" ||
-          value.length > 5000
-      )
+      sponsorInterest.some((item) => !allowedInterests.includes(item)) ||
+      sponsorLevel.some((item) => !allowedLevels.includes(item))
     ) {
       return NextResponse.json(
-        { success: false, message: "One or more fields are invalid." },
+        {
+          success: false,
+          message: "Invalid sponsorship selection.",
+        },
         { status: 400 }
       );
     }
@@ -105,10 +146,13 @@ export async function POST(request: NextRequest) {
       process.env.TEAM_EMAIL || "enquiry@confexmeet.com";
 
     if (!smtpUser || !smtpPass || !smtpFrom) {
-      console.error("Partnership enquiry: SMTP configuration is missing.");
+      console.error("Sponsor enquiry: SMTP configuration is missing.");
 
       return NextResponse.json(
-        { success: false, message: "Email service is not configured." },
+        {
+          success: false,
+          message: "Email service is not configured.",
+        },
         { status: 500 }
       );
     }
@@ -124,7 +168,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const safe = (value: string) => escapeHtml(value.trim());
+    const safe = (value: string) => escapeHtml(value);
 
     const submittedAt = new Date().toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
@@ -132,123 +176,191 @@ export async function POST(request: NextRequest) {
       timeStyle: "short",
     });
 
-    // Send notification to the partnerships team
+    const interestsText = sponsorInterest.length
+      ? sponsorInterest.join(", ")
+      : "Not specified";
+
+    const levelsText = sponsorLevel.length
+      ? sponsorLevel.join(", ")
+      : "Not specified";
+
+    const objectivesText = sponsorObjectives || "Not provided";
+    const websiteText = companyWebsite || "Not provided";
+
+    const interestsHtml = sponsorInterest.length
+      ? sponsorInterest.map((item) => `<li>${safe(item)}</li>`).join("")
+      : "<li>Not specified</li>";
+
+    const levelsHtml = sponsorLevel.length
+      ? sponsorLevel.map((item) => `<li>${safe(item)}</li>`).join("")
+      : "<li>Not specified</li>";
+
+    // Send notification email to the partnerships team
     await transporter.sendMail({
-      from: `"Global AI GRCS Summit India 2026" <${smtpFrom}>`,
+      from: `"AI GRCS Summit India 2027" <${smtpFrom}>`,
       to: teamEmail,
-      replyTo: email.trim(),
-      subject: `New Partnership Enquiry — ${fullName.trim()}`,
+      replyTo: businessEmail,
+      subject: `New Sponsor Enquiry — ${fullName}`,
       text: `
-NEW PARTNERSHIP ENQUIRY
+NEW SPONSOR ENQUIRY
 
-Contact Details
-Name: ${fullName}
-Email: ${email}
+CONTACT DETAILS
+
+Full Name: ${fullName}
+Company Name: ${companyName}
+Title: ${title}
 Phone: ${phone}
-Job Title: ${jobTitle}
-Company: ${company}
-Website: ${website || "Not provided"}
+Business Email: ${businessEmail}
+Company Website: ${websiteText}
 
-Partnership Details
-Organisation Type: ${organisationType}
-Partnership Interest: ${partnershipInterest}
-Budget Range: ${budgetRange || "Not provided"}
+SPONSOR INTEREST
 
-Objectives
-Target Audience: ${targetAudience || "Not provided"}
-Meeting Objectives: ${meetingObjectives || "Not provided"}
-Additional Requirements: ${additionalRequirements || "Not provided"}
+${sponsorInterest.length ? sponsorInterest.map((item) => `- ${item}`).join("\n") : "Not specified"}
 
-Consent: Yes
-Submitted At: ${submittedAt}
+SPONSOR LEVEL
 
-Event: Global AI GRCS Summit India 2026
-Date: 21 JANUARY 2027
-Venue: Mumbai India
+${sponsorLevel.length ? sponsorLevel.map((item) => `- ${item}`).join("\n") : "Not specified"}
+
+SPONSOR OBJECTIVES
+
+${objectivesText}
+
+SUBMITTED AT
+${submittedAt}
+
+EVENT DETAILS
+AI GRCS Summit India 2027
+Date: 21 January 2027
+Location: Mumbai, India
       `.trim(),
       html: `
-        <div style="font-family:Arial,sans-serif;color:#222;max-width:700px;margin:auto">
-          <h2 style="color:#3E6BFF">New Partnership Enquiry</h2>
-          <p>A new partnership enquiry has been submitted through the website.</p>
+        <div style="font-family:Arial,sans-serif;color:#222;max-width:700px;margin:auto;line-height:1.6">
+          <div style="background:#102A56;padding:24px;color:#fff">
+            <h2 style="margin:0;color:#fff">New Sponsor Enquiry</h2>
+            <p style="margin:8px 0 0;color:#dbe6f5">
+              A new sponsorship enquiry has been submitted through the website.
+            </p>
+          </div>
 
-          <h3>Contact Details</h3>
-          <table cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%">
-            <tr><td><b>Name</b></td><td>${safe(fullName)}</td></tr>
-            <tr><td><b>Email</b></td><td>${safe(email)}</td></tr>
-            <tr><td><b>Phone</b></td><td>${safe(phone)}</td></tr>
-            <tr><td><b>Job Title</b></td><td>${safe(jobTitle)}</td></tr>
-            <tr><td><b>Company</b></td><td>${safe(company)}</td></tr>
-            <tr><td><b>Website</b></td><td>${safe(website || "Not provided")}</td></tr>
-          </table>
+          <div style="padding:24px">
+            <h3 style="color:#102A56">Contact Details</h3>
 
-          <h3>Partnership Details</h3>
-          <table cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%">
-            <tr><td><b>Organisation Type</b></td><td>${safe(organisationType)}</td></tr>
-            <tr><td><b>Partnership Interest</b></td><td>${safe(partnershipInterest)}</td></tr>
-            <tr><td><b>Budget Range</b></td><td>${safe(budgetRange || "Not provided")}</td></tr>
-          </table>
+            <table cellpadding="9" cellspacing="0" style="border-collapse:collapse;width:100%">
+              <tr>
+                <td style="border-bottom:1px solid #eee"><b>Full Name</b></td>
+                <td style="border-bottom:1px solid #eee">${safe(fullName)}</td>
+              </tr>
+              <tr>
+                <td style="border-bottom:1px solid #eee"><b>Company Name</b></td>
+                <td style="border-bottom:1px solid #eee">${safe(companyName)}</td>
+              </tr>
+              <tr>
+                <td style="border-bottom:1px solid #eee"><b>Title</b></td>
+                <td style="border-bottom:1px solid #eee">${safe(title)}</td>
+              </tr>
+              <tr>
+                <td style="border-bottom:1px solid #eee"><b>Phone</b></td>
+                <td style="border-bottom:1px solid #eee">${safe(phone)}</td>
+              </tr>
+              <tr>
+                <td style="border-bottom:1px solid #eee"><b>Business Email</b></td>
+                <td style="border-bottom:1px solid #eee">${safe(businessEmail)}</td>
+              </tr>
+              <tr>
+                <td style="border-bottom:1px solid #eee"><b>Company Website</b></td>
+                <td style="border-bottom:1px solid #eee">${safe(websiteText)}</td>
+              </tr>
+            </table>
 
-          <h3>Objectives</h3>
-          <p><b>Target Audience:</b><br/>${safe(targetAudience || "Not provided")}</p>
-          <p><b>Meeting Objectives:</b><br/>${safe(meetingObjectives || "Not provided")}</p>
-          <p><b>Additional Requirements:</b><br/>${safe(additionalRequirements || "Not provided")}</p>
+            <h3 style="color:#102A56;margin-top:28px">Sponsor Interest</h3>
+            <ul>${interestsHtml}</ul>
 
-          <p><b>Consent:</b> Yes</p>
-          <p><b>Submitted At:</b> ${safe(submittedAt)}</p>
+            <h3 style="color:#102A56;margin-top:28px">Sponsor Level</h3>
+            <ul>${levelsHtml}</ul>
 
-          <hr/>
-          <p style="color:#666;font-size:12px">
-            Global AI GRCS Summit India 2026<br/>
-            21 JANUARY 2027 · Mumbai India
-          </p>
+            <h3 style="color:#102A56;margin-top:28px">Sponsor Objectives</h3>
+            <div style="background:#f5f7fb;padding:16px;border-radius:8px;white-space:pre-wrap">${safe(objectivesText)}</div>
+
+            <p style="margin-top:24px">
+              <b>Submitted At:</b> ${safe(submittedAt)}
+            </p>
+
+            <hr style="border:none;border-top:1px solid #eee;margin:24px 0" />
+
+            <p style="color:#666;font-size:13px">
+              AI GRCS Summit India 2027<br/>
+              21 January 2027 · Mumbai, India
+            </p>
+          </div>
         </div>
       `,
     });
 
-    // Send acknowledgement to the person submitting the form
+    // Send acknowledgement email to the sponsor
     await transporter.sendMail({
-      from: `"Global AI GRCS Summit India 2026" <${smtpFrom}>`,
-      to: email.trim(),
-      subject: "We received your partnership enquiry",
+      from: `"AI GRCS Summit India 2027" <${smtpFrom}>`,
+      to: businessEmail,
+      subject: "We received your sponsorship enquiry",
       text: `
-Dear ${fullName.trim()},
+Dear ${fullName},
 
-Thank you for your interest in partnering with Global AI GRCS Summit India 2026.
+Thank you for your interest in sponsoring AI GRCS Summit India 2027.
 
-Our partnerships team will review your enquiry and contact you to discuss suitable opportunities.
+We have successfully received your sponsorship enquiry. Our partnerships team will review your submission and contact you to discuss suitable sponsorship opportunities.
 
-Event: Global AI GRCS Summit India 2026
-Date: 21 JANUARY 2027
-Venue: Mumbai India
+EVENT DETAILS
+
+AI GRCS Summit India 2027
+Date: 21 January 2027
+Location: Mumbai, India
+
+Thank you for your interest. We look forward to connecting with you.
 
 Regards,
 Summit Partnerships Team
       `.trim(),
       html: `
         <div style="font-family:Arial,sans-serif;color:#222;max-width:600px;margin:auto;line-height:1.7">
-          <h2 style="color:#3E6BFF">Thank you, ${safe(fullName)}!</h2>
-          <p>We have received your partnership enquiry for
-          <b>Global AI GRCS Summit India 2026</b>.</p>
-          <p>Our partnerships team will review your enquiry and contact you to discuss suitable opportunities.</p>
-
-          <div style="background:#f5f7fb;padding:18px;border-radius:8px">
-            <b>Event:</b> Global AI GRCS Summit India 2026<br/>
-            <b>Date:</b> 21 JANUARY 2027<br/>
-            <b>Venue:</b> Mumbai India
+          <div style="background:#102A56;padding:24px;color:#fff">
+            <h2 style="margin:0;color:#fff">Thank You, ${safe(fullName)}!</h2>
           </div>
 
-          <p>Thank you for your interest. We look forward to connecting with you.</p>
-          <p>Regards,<br/><b>Summit Partnerships Team</b></p>
+          <div style="padding:24px">
+            <p>
+              We have successfully received your sponsorship enquiry for
+              <b>AI GRCS Summit India 2027</b>.
+            </p>
+
+            <p>
+              Our partnerships team will review your submission and contact you
+              to discuss suitable sponsorship opportunities.
+            </p>
+
+            <div style="background:#f5f7fb;padding:18px;border-radius:8px;margin:24px 0">
+              <b>Event:</b> AI GRCS Summit India 2027<br/>
+              <b>Date:</b> 21 January 2027<br/>
+              <b>Location:</b> Mumbai, India
+            </div>
+
+            <p>
+              Thank you for your interest. We look forward to connecting with you.
+            </p>
+
+            <p>
+              Regards,<br/>
+              <b>Summit Partnerships Team</b>
+            </p>
+          </div>
         </div>
       `,
     });
 
     return NextResponse.json({
       success: true,
-      message: "Your partnership enquiry has been submitted successfully.",
+      message: "Your sponsorship enquiry has been submitted successfully.",
     });
   } catch (error) {
-    console.error("Partnership enquiry email error:", error);
+    console.error("Sponsor enquiry email error:", error);
 
     return NextResponse.json(
       {
