@@ -154,10 +154,10 @@ export function Stats() {
                 <Icon
                   size={18}
                   strokeWidth={1.7}
-                  className="shrink-0 text-[#D8BD8B] sm:h-5 sm:w-5"
+                  className="shrink-0 text-[#D8BD8B] sm:h-8 sm:w-8"
                 />
 
-                <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white sm:text-xs sm:tracking-[0.12em] md:text-sm">
+                <span className="text-[20px] font-semibold uppercase tracking-[0.08em] text-white sm:text-xs sm:tracking-[0.12em] md:text-xl">
                   {pillar.label}
                 </span>
               </motion.div>

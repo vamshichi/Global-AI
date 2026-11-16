@@ -1,6 +1,8 @@
 
 import { ArrowUpRight, ShieldCheck } from "lucide-react";
 import { footerColumns } from "@/data/footer";
+import Image from "next/image";
+import { footer } from "framer-motion/client";
 
 export function Footer() {
   return (
@@ -9,15 +11,13 @@ export function Footer() {
         {/* Brand block */}
         <div className="grid gap-12 py-16 lg:grid-cols-[1.2fr_1fr] lg:py-20">
           <div>
-            <a href="#top" className="group inline-block">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-200">
-                AI GRCS Summit
-              </p>
-
-              <h2 className="mt-3 text-3xl font-medium tracking-[-0.04em] text-white sm:text-4xl">
-                India <span className="text-white/35">2027</span>
-              </h2>
-            </a>
+            <Image
+              src="/logo.png"
+              alt="Global AI GRCS Summit India"
+              width={200}
+              height={50}
+              className="h-auto w-auto"
+            />
 
             <p className="mt-5 max-w-md text-sm leading-7 text-white/45">
               Where leaders come together to shape the future of AI governance,
@@ -101,6 +101,6 @@ export function Footer() {
           </a>
         </div>
       </div>
-    </footer>
+    </footer> 
   );
 }

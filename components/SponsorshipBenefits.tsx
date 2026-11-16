@@ -100,11 +100,11 @@ export function SponsorshipBenefits() {
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="mx-auto mb-12 max-w-3xl text-center"
           >
-            <p className="mb-4 text-3xl font-semibold uppercase tracking-[0.2em] text-[#D8BD8B]">
+            <p className="mb-4 text-3xl font-semibold uppercase tracking-[0.2em] text-[#D8BD8B] pb-5">
               Partnership Opportunities
             </p>
 
-            <h2 className="text-xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+            <h2 className="text-xl font-semibold leading-tight tracking-tight sm:text-2xl lg:text-2xl">
               Put Your Brand at the
               <span className="text-[#A9C9F3]"> Centre of the Conversation.</span>
             </h2>
@@ -187,7 +187,7 @@ export function SponsorshipBenefits() {
               onClick={() => setActiveForm("sponsor")}
               whileHover={reducedMotion ? undefined : { y: -3 }}
               whileTap={reducedMotion ? undefined : { scale: 0.97 }}
-              className="inline-flex min-h-12 items-center justify-center gap-4 bg-white px-8 py-4 text-xs font-semibold uppercase tracking-[0.1em] text-[#102A56] transition-colors duration-300 hover:bg-[#DCEBFA]"
+              className="inline-flex min-h-12 items-center justify-center gap-4 bg-white px-8 py-6 text-xs font-semibold uppercase tracking-[0.1em] text-[#102A56] transition-colors duration-300 hover:bg-[#DCEBFA]"
             >
               Become a Sponsor
               <ArrowUpRight size={17} />

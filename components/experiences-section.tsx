@@ -55,11 +55,11 @@ export function ExperiencesSection() {
             className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
           >
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
-                The Summit Experience
+              <p className="mb-3 text-3xl font-semibold uppercase tracking-[0.16em] text-[#2866B5] pb-5">
+                What you will Experience At The Summit
               </p>
 
-              <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-4xl">
                 More than a conference.
                 <span className="text-[#2866B5]">
                   {" "}A meeting of minds.
@@ -181,7 +181,7 @@ export function ExperiencesSection() {
               whileHover={reducedMotion ? undefined : { y: -3 }}
               whileTap={reducedMotion ? undefined : { scale: 0.97 }}
               onClick={() => setActiveForm("sponsor")}
-              className="inline-flex items-center gap-2 bg-[#174B89] px-5 py-3 text-xs font-semibold text-white transition-colors duration-300 hover:bg-[#102A56]"
+              className="inline-flex items-center gap-2 bg-[#174B89] px-8 py-6 text-xs font-semibold text-white transition-colors duration-300 hover:bg-[#102A56]"
             >
               Become a Sponsor
               <ArrowUpRight

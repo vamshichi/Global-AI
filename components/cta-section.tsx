@@ -72,7 +72,7 @@ export function CtaSection() {
             <div className="mb-7 flex items-center justify-center gap-3">
               <span className="h-px w-8 bg-[#C5A46D]" />
 
-              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#D9BD8C]">
+              <p className="text-[30px] font-semibold uppercase tracking-[0.25em] text-[#D9BD8C]">
                 Be Part of the Conversation
               </p>
 

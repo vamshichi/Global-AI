@@ -34,12 +34,12 @@ export function DelegatesSection() {
 
           {/* Section Heading */}
           <motion.div {...reveal()} className="mb-8">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
+            <p className="mb-3 text-3xl font-semibold uppercase tracking-[0.16em] text-[#2866B5] pb-5">
               Who Attends
             </p>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <h2 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+              <h2 className="max-w-2xl text-xl font-semibold leading-tight tracking-tight sm:text-4xl">
                 Meet the leaders
                 <span className="text-[#2866B5]">
                   {" "}shaping AI.
@@ -117,7 +117,7 @@ export function DelegatesSection() {
               whileTap={
                 reducedMotion ? undefined : { scale: 0.97 }
               }
-              className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 bg-[#174B89] px-6 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#102A56]"
+              className="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 bg-[#174B89] px-6 py-6 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#102A56]"
             >
               Apply for Delegate Invitation
               <ArrowUpRight size={16} />

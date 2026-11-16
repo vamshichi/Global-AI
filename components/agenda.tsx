@@ -51,11 +51,11 @@ export function Agenda() {
             className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"
           >
             <div>
-              <p className="mb-3 text-2xl font-semibold uppercase tracking-[0.16em] text-[#2866B5]">
+              <p className="mb-3 text-3xl font-semibold uppercase tracking-[0.16em] text-[#2866B5] pb-5">
                 Summit Agenda
               </p>
 
-              <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+              <h2 className="text-xl font-semibold tracking-tight sm:text-4xl">
                 A day of insight.
                 <span className="text-[#2866B5]">
                   {" "}Ideas into action.
@@ -208,7 +208,7 @@ export function Agenda() {
               onClick={() => setActiveForm("delegate")}
               whileHover={reducedMotion ? undefined : { y: -3 }}
               whileTap={reducedMotion ? undefined : { scale: 0.97 }}
-              className="inline-flex min-h-11 items-center justify-center gap-3 bg-[#174B89] px-5 py-3 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#102A56]"
+              className="inline-flex min-h-11 items-center justify-center gap-3 bg-[#174B89] px-5 py-6 text-xs font-semibold uppercase tracking-[0.08em] text-white transition-colors duration-300 hover:bg-[#102A56]"
             >
               Apply for Delegate Invitation
               <ArrowUpRight size={16} />

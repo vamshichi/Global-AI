@@ -118,16 +118,16 @@ export function StormTimeline() {
                       : ""
                   }`}
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F1F6FF] text-[#155EEF]">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#F1F6FF] text-[#155EEF]">
                     <Icon size={19} strokeWidth={1.7} />
                   </div>
 
                   <div>
-                    <p className="text-[9px] font-semibold tracking-widest text-[#91A3BC]">
+                    <p className="text-[12px] font-semibold tracking-widest text-[#91A3BC]">
                       {pillar.number}
                     </p>
 
-                    <p className="mt-1 text-sm font-semibold text-[#102A56]">
+                    <p className="mt-1 text-2xl font-semibold text-[#102A56]">
                       {pillar.name}
                     </p>
                   </div>
@@ -336,7 +336,7 @@ export function StormTimeline() {
                 </AnimatePresence>
 
                 <div className="mt-7 flex items-center justify-between border-t border-white/15 pt-5">
-                  <p className="text-xs text-white/55">
+                  <p className="text-2xl text-white/55">
                     India's AI future is being shaped now.
                   </p>
 
