@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const teamEmail = process.env.TEAM_EMAIL || "enquiry@confexmeet.com";
+    const teamEmail = process.env.TEAM_EMAIL || "enquiry@globalbusinesssummits.com";
     const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 
     if (
@@ -161,7 +161,7 @@ We have received your enquiry regarding ${enquiryType.trim()}. Our team will rev
 
 Regards,
 Global AI GRCS Summit Team
-enquiry@confexmeet.com
+enquiry@globalbusinesssummits.com
       `.trim(),
       html: `
         <div style="font-family:Arial,sans-serif;color:#222;max-width:600px;margin:auto;line-height:1.8">
@@ -180,7 +180,7 @@ enquiry@confexmeet.com
 
           <p>Regards,<br/>
           <strong>Global AI GRCS Summit Team</strong><br/>
-          enquiry@confexmeet.com</p>
+          enquiry@globalbusinesssummits.com</p>
         </div>
       `,
     });

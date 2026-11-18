@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
     const smtpPass = process.env.SMTP_PASS;
     const smtpFrom = process.env.SMTP_FROM || smtpUser;
     const teamEmail =
-      process.env.TEAM_EMAIL || "enquiry@confexmeet.com";
+      process.env.TEAM_EMAIL || "enquiry@globalbusinesssummits.com";
 
     if (!smtpUser || !smtpPass || !smtpFrom) {
       console.error("Sponsor enquiry: SMTP configuration is missing.");

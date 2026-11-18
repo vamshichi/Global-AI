@@ -23,6 +23,7 @@ export function Hero() {
 
   const [activeForm, setActiveForm] = useState<FormType>(null);
   const [activeVideo, setActiveVideo] = useState(0);
+
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -30,23 +31,18 @@ export function Hero() {
     seconds: 0,
   });
 
-  const targetDate = new Date(
-    "2027-01-21T09:00:00+05:30"
-  ).getTime();
-
-  // Countdown
   useEffect(() => {
+    const targetDate = new Date(
+      "2027-01-21T09:00:00+05:30"
+    ).getTime();
+
     const updateTimer = () => {
       const difference = Math.max(0, targetDate - Date.now());
 
       setTimeLeft({
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor(
-          (difference / (1000 * 60 * 60)) % 24
-        ),
-        minutes: Math.floor(
-          (difference / (1000 * 60)) % 60
-        ),
+        days: Math.floor(difference / 86400000),
+        hours: Math.floor((difference / 3600000) % 24),
+        minutes: Math.floor((difference / 60000) % 60),
         seconds: Math.floor((difference / 1000) % 60),
       });
     };
@@ -56,9 +52,8 @@ export function Hero() {
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, [targetDate]);
+  }, []);
 
-  // Automatically move to the next video when the current one ends
   const handleVideoEnd = () => {
     setActiveVideo((current) => (current + 1) % heroVideos.length);
   };
@@ -66,13 +61,13 @@ export function Hero() {
   const reveal = {
     hidden: {
       opacity: 0,
-      y: reduceMotion ? 0 : 20,
+      y: reduceMotion ? 0 : 15,
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: reduceMotion ? 0 : 0.7,
+        duration: reduceMotion ? 0 : 0.6,
         ease: [0.22, 1, 0.36, 1] as const,
       },
     },
@@ -89,57 +84,57 @@ export function Hero() {
     <>
       <section
         id="home"
-        className="relative isolate flex min-h-[850px] items-center justify-center overflow-hidden bg-[#101827] text-white md:min-h-[calc(100svh-20px)]"
+        className="relative isolate flex h-[100svh] min-h-[680px] w-full items-center justify-center overflow-hidden bg-[#101827] text-white"
       >
         {/* BACKGROUND VIDEO */}
         <div className="absolute inset-0 -z-30 overflow-hidden bg-black">
-
           <AnimateVideo
             src={heroVideos[activeVideo]}
             onEnded={handleVideoEnd}
             reducedMotion={!!reduceMotion}
           />
-
         </div>
 
-        {/* READABILITY OVERLAY */}
-        <div className="absolute inset-0 -z-20 bg-gradient-to-b from-black/40 via-black/20 to-black/65" />
+        {/* DARK OVERLAY */}
+        <div className="absolute inset-0 -z-20 bg-black/55" />
 
-        {/* MAIN CONTENT */}
-        <div className="container-edge relative z-10 flex w-full flex-col items-center px-5 pb-16 pt-32 text-center sm:pb-20">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/20 via-transparent to-black/50" />
+
+        {/* HERO CONTENT */}
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center justify-center px-5 pb-6 pt-44 text-center sm:px-8 sm:pt-24">
 
           {/* EYEBROW */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="mb-7 flex items-center justify-center gap-3"
+            className="mb-3 flex items-center justify-center gap-3"
           >
-            <span className="h-px w-8 bg-[#A78BFA]" />
+            <span className="h-px w-7 bg-[#C4B5FD]" />
 
-            <span className="text-xs font-semibold uppercase tracking-[0.24em] text-white sm:text-sm">
-              India’s Executive AI Governance Forum
-            </span>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-[#DDD6FE] sm:text-xs">
+              India’s Executive AI Governance Forum AI GRCS Summit India · 2027
+            </p>
 
-            <span className="h-px w-8 bg-[#A78BFA]" />
+            <span className="h-px w-7 bg-[#C4B5FD]" />
           </motion.div>
 
           {/* EVENT NAME */}
-          <motion.p
+          {/* <motion.p
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="mb-5 text-sm font-semibold uppercase tracking-[0.3em] text-[#D7C5FF]"
+            className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-white/80 sm:text-sm"
           >
-            AI GRCS SUMMIT INDIA · 2027
-          </motion.p>
+            The Future of AI
+          </motion.p> */}
 
-          {/* HEADLINE */}
+          {/* MAIN HEADING */}
           <motion.h1
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="max-w-[1100px] text-5xl font-semibold leading-[1.05] tracking-[-0.055em] [text-shadow:0_2px_12px_rgba(0,0,0,0.35)] sm:text-6xl md:text-7xl lg:text-[88px]"
+            className="mx-auto max-w-4xl text-center text-3xl font-semibold leading-[1.08] tracking-[-0.045em] sm:text-5xl md:text-6xl lg:text-[58px]"
           >
             The Future of AI
             <br />
@@ -150,41 +145,45 @@ export function Hero() {
           </motion.h1>
 
           {/* DESCRIPTION */}
-          <motion.p
-            initial="hidden"
-            animate="visible"
-            variants={reveal}
-            className="mt-7 max-w-[680px] text-sm leading-7 text-white [text-shadow:0_1px_8px_rgba(0,0,0,0.4)] sm:text-base md:text-lg"
-          >
-            Where global leaders shape the future of AI Governance,
-            Risk, Compliance and Security.
-            <br className="hidden sm:block" />
-            One summit. One conversation. A more accountable AI future.
-          </motion.p>
-
-          {/* EVENT INFORMATION */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="mt-9 flex flex-wrap items-center justify-center gap-x-8 gap-y-4"
+            className="mx-auto mt-5 max-w-2xl text-center"
           >
-            <div className="flex items-center gap-2 text-sm text-white">
-              <CalendarDays size={17} className="text-[#D7C5FF]" />
+            {/* <p className="text-sm leading-6 text-white/90 sm:text-base md:text-sm">
+              Where global leaders shape the future of AI Governance,
+              Risk, Compliance and Security.
+            </p> */}
+
+            {/* <p className="mt-1 text-sm leading-6 text-white/75 sm:text-base">
+              One summit. One conversation. A more accountable AI future.
+            </p> */}
+          </motion.div>
+
+          {/* EVENT DETAILS */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={reveal}
+            className="mt-6 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 text-center"
+          >
+            <div className="flex items-center justify-center gap-2 text-xs text-white/90 sm:text-sm">
+              <CalendarDays size={16} className="text-[#D7C5FF]" />
               Thursday, 21 January 2027
             </div>
 
-            <span className="hidden h-4 w-px bg-white/60 sm:block" />
+            <div className="hidden h-4 w-px bg-white/30 sm:block" />
 
-            <div className="flex items-center gap-2 text-sm text-white">
-              <MapPin size={17} className="text-[#D7C5FF]" />
+            <div className="flex items-center justify-center gap-2 text-xs text-white/90 sm:text-sm">
+              <MapPin size={16} className="text-[#D7C5FF]" />
               Mumbai, India
             </div>
 
-            <span className="hidden h-4 w-px bg-white/60 sm:block" />
+            <div className="hidden h-4 w-px bg-white/30 sm:block" />
 
-            <div className="flex items-center gap-2 text-sm text-white">
-              <Users size={17} className="text-[#D7C5FF]" />
+            <div className="flex items-center justify-center gap-2 text-xs text-white/90 sm:text-sm">
+              <Users size={16} className="text-[#D7C5FF]" />
               200+ Senior Leaders
             </div>
           </motion.div>
@@ -194,29 +193,29 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="mt-11 w-full max-w-[540px]"
+            className="mt-7 w-full max-w-[460px]"
           >
-            <div className="mb-4 flex items-center justify-center gap-2">
-              <Sparkles size={14} className="text-[#D7C5FF]" />
+            <div className="mb-3 flex items-center justify-center gap-2">
+              <Sparkles size={13} className="text-[#D7C5FF]" />
 
-              <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white sm:text-xs">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-white/90 sm:text-xs">
                 The Summit Begins In
               </p>
 
-              <Sparkles size={14} className="text-[#D7C5FF]" />
+              <Sparkles size={13} className="text-[#D7C5FF]" />
             </div>
 
-            <div className="grid grid-cols-4 gap-2 sm:gap-4">
+            <div className="grid grid-cols-4 gap-2 sm:gap-3">
               {timerItems.map((item) => (
                 <div
                   key={item.label}
-                  className="border border-white/35 bg-black/10 px-2 py-4 backdrop-blur-sm sm:py-5"
+                  className="border border-white/25 bg-white/[0.06] px-2 py-3 backdrop-blur-md"
                 >
-                  <div className="text-3xl font-semibold tabular-nums tracking-tight sm:text-4xl md:text-5xl">
+                  <div className="text-2xl font-semibold tabular-nums tracking-tight sm:text-3xl">
                     {String(item.value).padStart(2, "0")}
                   </div>
 
-                  <p className="mt-2 text-[9px] uppercase tracking-[0.18em] text-white/90 sm:text-[10px]">
+                  <p className="mt-1 text-[9px] uppercase tracking-[0.16em] text-white/70 sm:text-[10px]">
                     {item.label}
                   </p>
                 </div>
@@ -229,12 +228,12 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             variants={reveal}
-            className="mt-10 flex w-full flex-col items-center justify-center gap-4 sm:w-auto sm:flex-row"
+            className="mt-7 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row"
           >
             <button
               type="button"
               onClick={() => setActiveForm("sponsor")}
-              className="w-full bg-[#3E6BFF] px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white transition hover:bg-blue-700 sm:w-auto"
+              className="w-full bg-[#3E6BFF] px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.12em] text-white transition-colors duration-300 hover:bg-blue-700 sm:w-auto"
             >
               Become a Sponsor
             </button>
@@ -242,14 +241,14 @@ export function Hero() {
             <button
               type="button"
               onClick={() => setActiveForm("delegate")}
-              className="w-full border border-white/60 px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white transition hover:bg-white hover:text-[#0b0d12] sm:w-auto"
+              className="w-full border border-white/60 bg-white/5 px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.12em] text-white backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-[#101827] sm:w-auto"
             >
               Apply for Delegate Invitation
             </button>
           </motion.div>
 
           {/* VIDEO INDICATORS */}
-          <div className="mt-10 flex items-center gap-2">
+          {/* <div className="mt-6 flex items-center justify-center gap-2">
             {heroVideos.map((_, index) => (
               <button
                 key={index}
@@ -258,12 +257,12 @@ export function Hero() {
                 onClick={() => setActiveVideo(index)}
                 className={`h-[3px] transition-all duration-300 ${
                   activeVideo === index
-                    ? "w-9 bg-[#D7C5FF]"
+                    ? "w-8 bg-[#D7C5FF]"
                     : "w-4 bg-white/40 hover:bg-white/80"
                 }`}
               />
             ))}
-          </div>
+          </div> */}
 
         </div>
       </section>
@@ -277,7 +276,7 @@ export function Hero() {
   );
 }
 
-/* BACKGROUND VIDEO COMPONENT */
+/* BACKGROUND VIDEO */
 function AnimateVideo({
   src,
   onEnded,
@@ -296,7 +295,7 @@ function AnimateVideo({
       preload="auto"
       onEnded={onEnded}
       initial={{ opacity: 0 }}
-      animate={{ opacity: 0.55 }}
+      animate={{ opacity: 0.5 }}
       transition={{
         duration: reducedMotion ? 0 : 0.8,
       }}

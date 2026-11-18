@@ -4,6 +4,8 @@ import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
+/* HTML ESCAPING */
+
 function escapeHtml(value: string): string {
   return value.replace(/[&<>"']/g, (char) => {
     const entities: Record<string, string> = {
@@ -18,48 +20,34 @@ function escapeHtml(value: string): string {
   });
 }
 
+/* CLEAN INPUT */
+
 function cleanString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function cleanStringArray(value: unknown): string[] {
-  if (!Array.isArray(value)) return [];
-
-  return value
-    .filter((item): item is string => typeof item === "string")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-const allowedSolutions = [
-  "AI Governance",
-  "AI Security",
-  "Cybersecurity",
-  "Enterprise IT Security",
-  "IT Audit & Assurance",
-  "GRC Solutions",
-  "Regulatory & Compliance Audits",
-  "Model Risk",
-  "Data Privacy/DPDP Compliance",
-  "Agentic AI",
-  "Others",
-];
+/* ALLOWED OPTIONS */
 
 const allowedHearAboutOptions = [
-  "Scrolled through the event page",
   "LinkedIn",
-  "Received an Email Invitation",
-  "Referred by your colleague / Peer",
-  "Heard from one of our friendly agents",
   "Social Media",
-  "Others",
+  "Email Invitation",
+  "Colleague / Peer",
+  "Event Website",
+  "Other",
 ];
+
+/* POST REQUEST */
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    if (!body || typeof body !== "object" || Array.isArray(body)) {
+    if (
+      !body ||
+      typeof body !== "object" ||
+      Array.isArray(body)
+    ) {
       return NextResponse.json(
         {
           success: false,
@@ -69,90 +57,144 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // New delegate form fields
-    const firstName = cleanString(body.firstName);
-    const lastName = cleanString(body.lastName);
-    const title = cleanString(body.title);
+    /* GET FORM FIELDS */
+
+    const fullName = cleanString(body.fullName);
     const organisation = cleanString(body.organisation);
-
-    const solutionsInterestedIn = cleanStringArray(
-      body.solutionsInterestedIn
-    );
-
+    const jobTitle = cleanString(body.jobTitle);
+    const email = cleanString(body.email).toLowerCase();
+    const phoneNumber = cleanString(body.phoneNumber);
     const heardFrom = cleanString(body.heardFrom);
-    const confirmation = body.confirmation;
+    const referralCode = cleanString(body.referralCode);
 
-    // Validate required fields
+    const agreeTerms = body.agreeTerms;
+    const marketingConsent = body.marketingConsent;
+
+    /* REQUIRED FIELD VALIDATION */
+
     if (
-      !firstName ||
-      !lastName ||
-      !title ||
+      !fullName ||
       !organisation ||
-      !heardFrom ||
-      confirmation !== true
+      !jobTitle ||
+      !email ||
+      !phoneNumber ||
+      !heardFrom
     ) {
       return NextResponse.json(
         {
           success: false,
-          message: "Please complete all required fields and confirm your submission.",
+          message: "Please complete all required fields.",
         },
         { status: 400 }
       );
     }
 
-    // Validate field lengths
-    const fields = [
-      firstName,
-      lastName,
-      title,
-      organisation,
-      heardFrom,
-      ...solutionsInterestedIn,
-    ];
+    /* TERMS VALIDATION */
+
+    if (agreeTerms !== true) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please accept the Terms and Conditions.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (typeof marketingConsent !== "boolean") {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid marketing consent value.",
+        },
+        { status: 400 }
+      );
+    }
+
+    /* LENGTH VALIDATION */
 
     if (
-      fields.some((value) => value.length > 500) ||
-      firstName.length > 100 ||
-      lastName.length > 100 ||
-      title.length > 150 ||
-      organisation.length > 200
+      fullName.length > 150 ||
+      organisation.length > 200 ||
+      jobTitle.length > 150 ||
+      email.length > 254 ||
+      phoneNumber.length > 30 ||
+      heardFrom.length > 100 ||
+      referralCode.length > 100
     ) {
       return NextResponse.json(
         {
           success: false,
-          message: "One or more fields are invalid or too long.",
+          message: "One or more fields are too long.",
         },
         { status: 400 }
       );
     }
 
-    // Validate checkbox values
-    if (
-      solutionsInterestedIn.some(
-        (item) => !allowedSolutions.includes(item)
-      ) ||
-      heardFrom.length > 200 ||
-      !allowedHearAboutOptions.includes(heardFrom)
-    ) {
+    /* EMAIL VALIDATION */
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid selection. Please refresh the page and try again.",
+          message: "Please enter a valid email address.",
         },
         { status: 400 }
       );
     }
 
-    // SMTP configuration
-    const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
-    const smtpPort = Number(process.env.SMTP_PORT || 587);
+    /* PHONE VALIDATION */
+
+    const phoneDigits = phoneNumber.replace(/\D/g, "");
+
+    if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please enter a valid phone number.",
+        },
+        { status: 400 }
+      );
+    }
+
+    /* HEARD FROM VALIDATION */
+
+    if (!allowedHearAboutOptions.includes(heardFrom)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid referral source.",
+        },
+        { status: 400 }
+      );
+    }
+
+    /* SMTP CONFIGURATION */
+
+    const smtpHost =
+      process.env.SMTP_HOST || "smtp.gmail.com";
+
+    const smtpPort =
+      Number(process.env.SMTP_PORT || 587);
+
     const smtpUser = process.env.SMTP_USER;
     const smtpPass = process.env.SMTP_PASS;
-    const fromEmail = process.env.SMTP_FROM || smtpUser;
-    const teamEmail =
-      process.env.TEAM_EMAIL || "enquiry@confexmeet.com";
 
-    if (!smtpUser || !smtpPass || !fromEmail || !teamEmail) {
+    const fromEmail =
+      process.env.SMTP_FROM || smtpUser;
+
+    const teamEmail =
+      process.env.TEAM_EMAIL || "enquiry@globalbusinesssummits.com";
+
+    if (
+      !smtpUser ||
+      !smtpPass ||
+      !fromEmail ||
+      !teamEmail
+    ) {
       console.error(
         "Delegate registration: SMTP configuration is incomplete."
       );
@@ -166,65 +208,66 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    /* EMAIL TRANSPORTER */
+
     const transporter = nodemailer.createTransport({
       host: smtpHost,
       port: smtpPort,
       secure:
-        process.env.SMTP_SECURE === "true" || smtpPort === 465,
+        process.env.SMTP_SECURE === "true" ||
+        smtpPort === 465,
       auth: {
         user: smtpUser,
         pass: smtpPass,
       },
     });
 
-    const safe = (value: string) => escapeHtml(value);
+    /* ESCAPE VALUES FOR HTML */
 
-    const fullName = `${firstName} ${lastName}`;
+    const safe = (value: string) =>
+      escapeHtml(value);
 
-    const solutionsText = solutionsInterestedIn.length
-      ? solutionsInterestedIn.map((item) => `- ${item}`).join("\n")
-      : "Not specified";
+    const submittedAt = new Date().toLocaleString(
+      "en-IN",
+      {
+        timeZone: "Asia/Kolkata",
+        dateStyle: "medium",
+        timeStyle: "short",
+      }
+    );
 
-    const solutionsHtml = solutionsInterestedIn.length
-      ? solutionsInterestedIn
-          .map((item) => `<li>${safe(item)}</li>`)
-          .join("")
-      : "<li>Not specified</li>";
+    const marketingConsentText =
+      marketingConsent ? "Yes" : "No";
 
-    const submittedAt = new Date().toLocaleString("en-IN", {
-      timeZone: "Asia/Kolkata",
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
+    /* SEND REGISTRATION EMAIL */
 
-    // Send registration notification to the event team
     await transporter.sendMail({
       from: `"AI GRCS Summit India 2027" <${fromEmail}>`,
+
       to: teamEmail,
-      subject: `New Delegate Invitation — ${fullName}`,
+
+      subject: `New Delegate Registration — ${fullName}`,
 
       text: `
-NEW DELEGATE INVITATION
+NEW DELEGATE REGISTRATION
 
 PERSONAL DETAILS
 
-First Name: ${firstName}
-Last Name: ${lastName}
 Full Name: ${fullName}
-Title: ${title}
-Organisation: ${organisation}
+Company / Organisation: ${organisation}
+Job Title: ${jobTitle}
+Email: ${email}
+Phone Number: ${phoneNumber}
 
-SOLUTIONS INTERESTED IN
+REGISTRATION DETAILS
 
-${solutionsText}
+Where did you hear about us?: ${heardFrom}
+Referral Code: ${referralCode || "Not provided"}
 
-HOW DID YOU HEAR ABOUT THE SUMMIT?
+CONSENT DETAILS
 
-${heardFrom}
-
-CONFIRMATION
-
-Confirmed: Yes
+Terms and Conditions: Accepted
+Marketing Consent: ${marketingConsentText}
 
 SUBMISSION DETAILS
 
@@ -238,72 +281,181 @@ Location: Mumbai, India
       `.trim(),
 
       html: `
-        <div style="font-family:Arial,sans-serif;color:#222;max-width:700px;margin:auto;line-height:1.6">
+        <div style="
+          font-family:Arial,sans-serif;
+          color:#222;
+          max-width:700px;
+          margin:auto;
+          line-height:1.6;
+        ">
 
-          <div style="background:#102A56;padding:24px;color:#fff">
-            <h2 style="margin:0;color:#fff">
-              New Delegate Invitation
+          <div style="
+            background:#102A56;
+            padding:24px;
+            color:#fff;
+          ">
+            <h2 style="margin:0;color:#fff;">
+              New Delegate Registration
             </h2>
-            <p style="margin:8px 0 0;color:#dbe6f5">
-              A new delegate invitation has been submitted through the website.
+
+            <p style="
+              margin:8px 0 0;
+              color:#dbe6f5;
+            ">
+              A new delegate registration has been
+              submitted through the website.
             </p>
           </div>
 
-          <div style="padding:24px">
+          <div style="padding:24px;">
 
-            <h3 style="color:#102A56">Personal Details</h3>
+            <h3 style="color:#102A56;">
+              Personal Details
+            </h3>
 
-            <table cellpadding="9" cellspacing="0" style="border-collapse:collapse;width:100%">
+            <table
+              cellpadding="10"
+              cellspacing="0"
+              style="
+                border-collapse:collapse;
+                width:100%;
+              "
+            >
+
               <tr>
-                <td style="border-bottom:1px solid #eee"><strong>First Name</strong></td>
-                <td style="border-bottom:1px solid #eee">${safe(firstName)}</td>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Full Name</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${safe(fullName)}
+                </td>
               </tr>
 
               <tr>
-                <td style="border-bottom:1px solid #eee"><strong>Last Name</strong></td>
-                <td style="border-bottom:1px solid #eee">${safe(lastName)}</td>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Company / Organisation</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${safe(organisation)}
+                </td>
               </tr>
 
               <tr>
-                <td style="border-bottom:1px solid #eee"><strong>Title</strong></td>
-                <td style="border-bottom:1px solid #eee">${safe(title)}</td>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Job Title</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${safe(jobTitle)}
+                </td>
               </tr>
 
               <tr>
-                <td style="border-bottom:1px solid #eee"><strong>Organisation</strong></td>
-                <td style="border-bottom:1px solid #eee">${safe(organisation)}</td>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Email</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${safe(email)}
+                </td>
               </tr>
+
+              <tr>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Phone Number</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${safe(phoneNumber)}
+                </td>
+              </tr>
+
             </table>
 
-            <h3 style="color:#102A56;margin-top:28px">
-              Solutions Interested In
+            <h3 style="
+              color:#102A56;
+              margin-top:28px;
+            ">
+              Registration Details
             </h3>
 
-            <ul style="padding-left:22px">
-              ${solutionsHtml}
-            </ul>
+            <table
+              cellpadding="10"
+              cellspacing="0"
+              style="
+                border-collapse:collapse;
+                width:100%;
+              "
+            >
 
-            <h3 style="color:#102A56;margin-top:28px">
-              How Did You Hear About the Summit?
+              <tr>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Where did you hear about us?</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${safe(heardFrom)}
+                </td>
+              </tr>
+
+              <tr>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Referral Code</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${safe(referralCode || "Not provided")}
+                </td>
+              </tr>
+
+            </table>
+
+            <h3 style="
+              color:#102A56;
+              margin-top:28px;
+            ">
+              Consent Details
             </h3>
 
-            <div style="background:#f5f7fb;padding:16px;border-radius:8px">
-              ${safe(heardFrom)}
-            </div>
+            <table
+              cellpadding="10"
+              cellspacing="0"
+              style="
+                border-collapse:collapse;
+                width:100%;
+              "
+            >
 
-            <h3 style="color:#102A56;margin-top:28px">
-              Confirmation
-            </h3>
+              <tr>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Terms and Conditions</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  Accepted
+                </td>
+              </tr>
 
-            <p>Confirmed: <strong>Yes</strong></p>
+              <tr>
+                <td style="border-bottom:1px solid #eee;">
+                  <strong>Marketing Consent</strong>
+                </td>
+                <td style="border-bottom:1px solid #eee;">
+                  ${marketingConsentText}
+                </td>
+              </tr>
 
-            <p style="margin-top:24px">
-              <strong>Submitted At:</strong> ${safe(submittedAt)}
+            </table>
+
+            <p style="margin-top:24px;">
+              <strong>Submitted At:</strong>
+              ${safe(submittedAt)}
             </p>
 
-            <hr style="border:none;border-top:1px solid #eee;margin:24px 0" />
+            <hr style="
+              border:none;
+              border-top:1px solid #eee;
+              margin:24px 0;
+            " />
 
-            <p style="color:#666;font-size:13px">
+            <p style="
+              color:#666;
+              font-size:13px;
+            ">
               AI GRCS Summit India 2027<br/>
               21 January 2027 · Mumbai, India
             </p>
@@ -313,16 +465,22 @@ Location: Mumbai, India
       `,
     });
 
+    /* SUCCESS RESPONSE */
+
     return NextResponse.json(
       {
         success: true,
-        message: "Your delegate registration has been submitted successfully.",
+        message:
+          "Your delegate registration has been submitted successfully.",
       },
       { status: 200 }
     );
 
   } catch (error) {
-    console.error("Delegate registration email error:", error);
+    console.error(
+      "Delegate registration email error:",
+      error
+    );
 
     return NextResponse.json(
       {

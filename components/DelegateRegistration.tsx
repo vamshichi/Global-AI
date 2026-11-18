@@ -5,38 +5,25 @@ import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
-const solutionOptions = [
-  "AI Governance",
-  "AI Security",
-  "Cybersecurity",
-  "Enterprise IT Security",
-  "IT Audit & Assurance",
-  "GRC Solutions",
-  "Regulatory & Compliance Audits",
-  "Model Risk",
-  "Data Privacy/DPDP Compliance",
-  "Agentic AI",
-  "Others",
-];
-
 const hearAboutOptions = [
-  "Scrolled through the event page",
   "LinkedIn",
-  "Received an Email Invitation",
-  "Referred by your colleague / Peer",
-  "Heard from one of our friendly agents",
   "Social Media",
-  "Others",
+  "Email Invitation",
+  "Colleague / Peer",
+  "Event Website",
+  "Other",
 ];
 
 const initialForm = {
-  firstName: "",
-  lastName: "",
-  title: "",
+  fullName: "",
   organisation: "",
-  solutionsInterestedIn: [] as string[],
+  jobTitle: "",
+  email: "",
+  phoneNumber: "",
   heardFrom: "",
-  confirmation: false,
+  referralCode: "",
+  agreeTerms: false,
+  marketingConsent: false,
 };
 
 export default function DelegateRegistration() {
@@ -55,22 +42,17 @@ export default function DelegateRegistration() {
     }));
   };
 
-  const toggleSolution = (solution: string) => {
-    setForm((prev) => ({
-      ...prev,
-      solutionsInterestedIn: prev.solutionsInterestedIn.includes(solution)
-        ? prev.solutionsInterestedIn.filter((item) => item !== solution)
-        : [...prev.solutionsInterestedIn, solution],
-    }));
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
 
     if (isSubmitting) return;
 
-    if (!form.confirmation) {
-      setErrorMessage("Please confirm your agreement before submitting.");
+    if (!form.agreeTerms) {
+      setErrorMessage(
+        "Please accept the Terms and Conditions."
+      );
       return;
     }
 
@@ -78,19 +60,23 @@ export default function DelegateRegistration() {
     setErrorMessage("");
 
     try {
-      const response = await fetch("/api/delegate-registration", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        "/api/delegate-registration",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
       const result = await response.json();
 
       if (!response.ok || !result.success) {
         throw new Error(
-          result.message || "Registration failed. Please try again."
+          result.message ||
+            "Registration failed. Please try again."
         );
       }
 
@@ -112,11 +98,6 @@ export default function DelegateRegistration() {
         id="registration"
         className="relative overflow-hidden bg-void px-6 py-24 lg:px-12 lg:py-32"
       >
-        <div className="pointer-events-none absolute inset-0">
-          <div className="field-grid absolute inset-0 opacity-30" />
-          <div className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#3E6BFF]/10 blur-[140px]" />
-        </div>
-
         <div className="relative mx-auto max-w-3xl text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -126,34 +107,14 @@ export default function DelegateRegistration() {
             <Check className="h-7 w-7 text-[#3E6BFF]" />
           </motion.div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mt-8 text-xs font-semibold uppercase tracking-[0.22em] text-[#3E6BFF]"
-          >
-            Registration received
-          </motion.p>
+          <h2 className="mt-8 text-4xl font-medium text-ink">
+            Thank you for registering.
+          </h2>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mt-4 text-4xl font-medium tracking-tight text-ink md:text-5xl"
-          >
-            Thank you for your interest.
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mx-auto mt-6 max-w-2xl text-base leading-7 text-ink-dim md:text-lg"
-          >
-            Thank you for your interest in AI GRCS Summit India 2027.
-            Our team will review your details and contact you with the
-            next steps.
-          </motion.p>
+          <p className="mt-6 text-base leading-7 text-ink-dim">
+            Your registration has been received.
+            Our team will contact you with further details.
+          </p>
         </div>
       </section>
     );
@@ -162,7 +123,7 @@ export default function DelegateRegistration() {
   return (
     <section
       id="registration"
-      className="relative overflow-hidden bg-void px-6 py-24 lg:px-12 lg:py-32"
+      className="relative overflow-hidden bg-void px-6 py-16 lg:px-12 lg:py-4"
     >
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
@@ -174,27 +135,19 @@ export default function DelegateRegistration() {
       </div>
 
       <div className="relative mx-auto max-w-5xl">
-        {/* Header */}
-        <div className="mx-auto mb-12 max-w-2xl text-center">
-          <p className="label-tag">
+
+        {/* Heading */}
+        <div className="mx-auto mb-10 max-w-2xl text-center">
+          {/* <p className="label-tag">
             Delegate invitation
-          </p>
+          </p> */}
 
-          <h2 className="mt-6 text-4xl font-medium leading-tight tracking-tight text-ink md:text-5xl lg:text-6xl">
-            Be part of the conversation.
+          <h2 className="mt-6 text-4xl font-medium leading-tight tracking-tight text-ink md:text-5xl">
+            Delegate Registration
           </h2>
-
-          <p className="mt-6 text-base leading-7 text-ink-dim md:text-lg">
-            Share your details and areas of interest to express your
-            interest in attending AI GRCS Summit India 2027.
-          </p>
-
-          <p className="mt-4 text-sm text-ink-dim">
-            21 January 2027 · Mumbai, India
-          </p>
         </div>
 
-        {/* Form */}
+        {/* Registration Form */}
         <motion.form
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 25 }}
@@ -203,283 +156,222 @@ export default function DelegateRegistration() {
           transition={{ duration: 0.7 }}
           className="border border-line bg-white/[0.025] p-6 backdrop-blur-xl md:p-10"
         >
-          {/* Personal details */}
-          <FormSection
-            number="01"
-            title="Your details"
-          />
 
-          <div className="grid gap-6 sm:grid-cols-2">
+          {/* Input Fields */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
             <Input
-              label="First Name"
+              label="Full Name"
               required
-              value={form.firstName}
-              onChange={(value) => updateField("firstName", value)}
+              value={form.fullName}
+              onChange={(value) =>
+                updateField("fullName", value)
+              }
             />
 
             <Input
-              label="Last Name"
+              label="Company / Organisation"
               required
-              value={form.lastName}
-              onChange={(value) => updateField("lastName", value)}
-            />
-
-            <Input
-              label="Title"
-              required
-              placeholder="Your professional designation"
-              value={form.title}
-              onChange={(value) => updateField("title", value)}
-            />
-
-            <Input
-              label="Organisation"
-              required
-              placeholder="Your organisation name"
               value={form.organisation}
-              onChange={(value) => updateField("organisation", value)}
-            />
-          </div>
-
-          {/* Solutions */}
-          <div className="mt-14">
-            <FormSection
-              number="02"
-              title="Solutions interested in"
+              onChange={(value) =>
+                updateField("organisation", value)
+              }
             />
 
-            <p className="mb-5 text-sm leading-6 text-ink-dim">
-              Select the areas that align with your professional
-              interests. You can choose more than one.
-            </p>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              {solutionOptions.map((solution) => {
-                const selected =
-                  form.solutionsInterestedIn.includes(solution);
-
-                return (
-                  <button
-                    key={solution}
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => toggleSolution(solution)}
-                    className={`
-                      flex min-h-12 items-center gap-3 border px-4 py-3
-                      text-left text-sm transition-all
-                      ${
-                        selected
-                          ? "border-[#3E6BFF] bg-[#3E6BFF]/10 text-ink"
-                          : "border-line bg-transparent text-ink-dim hover:border-ink/40 hover:text-ink"
-                      }
-                    `}
-                  >
-                    <span
-                      className={`
-                        flex h-5 w-5 shrink-0 items-center justify-center
-                        border transition-all
-                        ${
-                          selected
-                            ? "border-[#3E6BFF] bg-[#3E6BFF]"
-                            : "border-line"
-                        }
-                      `}
-                    >
-                      {selected && (
-                        <Check className="h-3.5 w-3.5 text-white" />
-                      )}
-                    </span>
-
-                    {solution}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* How did you hear */}
-          <div className="mt-14">
-            <FormSection
-              number="03"
-              title="How did you hear about the summit?"
+            <Input
+              label="Job Title"
+              required
+              value={form.jobTitle}
+              onChange={(value) =>
+                updateField("jobTitle", value)
+              }
             />
 
-            <p className="mb-5 text-sm leading-6 text-ink-dim">
-              Please select one option.
-            </p>
+            <Input
+              label="Email (Work Email Only)"
+              type="email"
+              required
+              value={form.email}
+              onChange={(value) =>
+                updateField("email", value)
+              }
+            />
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              {hearAboutOptions.map((option) => {
-                const selected = form.heardFrom === option;
+            <Input
+              label="🇮🇳 +91 Phone Number"
+              type="tel"
+              required
+              value={form.phoneNumber}
+              onChange={(value) =>
+                updateField("phoneNumber", value)
+              }
+            />
 
-                return (
-                  <button
+            {/* How did you hear */}
+            <div>
+              <select
+                required
+                value={form.heardFrom}
+                onChange={(e) =>
+                  updateField("heardFrom", e.target.value)
+                }
+                className="w-full border border-line bg-void px-4 py-3.5 text-sm text-ink outline-none transition focus:border-[#3E6BFF]"
+              >
+                <option value="" disabled>
+                  Where did you hear about us?*
+                </option>
+
+                {hearAboutOptions.map((option) => (
+                  <option
                     key={option}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    onClick={() => updateField("heardFrom", option)}
-                    className={`
-                      flex min-h-12 items-center gap-3 border px-4 py-3
-                      text-left text-sm transition-all
-                      ${
-                        selected
-                          ? "border-[#3E6BFF] bg-[#3E6BFF]/10 text-ink"
-                          : "border-line bg-transparent text-ink-dim hover:border-ink/40 hover:text-ink"
-                      }
-                    `}
+                    value={option}
                   >
-                    <span
-                      className={`
-                        flex h-5 w-5 shrink-0 items-center justify-center
-                        rounded-full border transition-all
-                        ${
-                          selected
-                            ? "border-[#3E6BFF]"
-                            : "border-line"
-                        }
-                      `}
-                    >
-                      {selected && (
-                        <span className="h-2.5 w-2.5 rounded-full bg-[#3E6BFF]" />
-                      )}
-                    </span>
-
                     {option}
-                  </button>
-                );
-              })}
+                  </option>
+                ))}
+              </select>
             </div>
+
+            {/* Referral Code */}
+            <Input
+              label="Referral Code (if any)"
+              value={form.referralCode}
+              onChange={(value) =>
+                updateField("referralCode", value)
+              }
+            />
+
           </div>
 
-          {/* Confirmation */}
-          <div className="mt-14">
-            <FormSection
-              number="04"
-              title="Confirmation"
-            />
+          {/* Terms and Conditions */}
+          <div className="mt-8 space-y-5">
 
             <label className="flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
-                checked={form.confirmation}
+                required
+                checked={form.agreeTerms}
                 onChange={(e) =>
-                  updateField("confirmation", e.target.checked)
+                  updateField(
+                    "agreeTerms",
+                    e.target.checked
+                  )
                 }
                 className="mt-1 h-4 w-4 shrink-0 accent-[#3E6BFF]"
               />
 
               <span className="text-sm leading-6 text-ink-dim">
-                I confirm that the information provided is accurate
-                and agree to be contacted by the AI GRCS Summit India
-                team regarding my delegate invitation and event-related
-                updates.
-                <span className="ml-1 text-[#3E6BFF]">*</span>
+                I have read and agree to the{" "}
+                <a
+                  href="#terms"
+                  className="text-[#3E6BFF] underline"
+                >
+                  Terms and Conditions
+                </a>
+                .
+                <span className="text-[#3E6BFF]">*</span>
               </span>
             </label>
+
+            {/* Marketing Consent */}
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={form.marketingConsent}
+                onChange={(e) =>
+                  updateField(
+                    "marketingConsent",
+                    e.target.checked
+                  )
+                }
+                className="mt-1 h-4 w-4 shrink-0 accent-[#3E6BFF]"
+              />
+
+              <span className="text-sm leading-6 text-ink-dim">
+                I agree to receive updates about future
+                events and marketing. I also consent to my
+                information being shared with selected
+                third parties and participants to enhance
+                the event experience.
+              </span>
+            </label>
+
           </div>
 
-          {/* Submit */}
-          <div className="mt-10 border-t border-line pt-8">
-            {errorMessage && (
-              <p
-                role="alert"
-                className="mb-4 text-sm text-red-500"
-              >
-                {errorMessage}
-              </p>
-            )}
+          {/* Error Message */}
+          {errorMessage && (
+            <p
+              role="alert"
+              className="mt-5 text-sm text-red-500"
+            >
+              {errorMessage}
+            </p>
+          )}
 
+          {/* Submit Button */}
+          <div className="mt-8 flex justify-center">
             <button
               type="submit"
-              disabled={!form.confirmation || isSubmitting}
+              disabled={!form.agreeTerms || isSubmitting}
               className="
-                group flex w-full items-center justify-between
-                bg-ink px-6 py-4 text-sm font-medium uppercase
-                tracking-[0.12em] text-void transition-all
-                hover:bg-[#3E6BFF] disabled:cursor-not-allowed
-                disabled:opacity-40 md:w-auto md:min-w-[280px]
+                group flex min-w-[200px] items-center
+                justify-center gap-5
+                bg-ink px-8 py-4 text-sm font-medium
+                uppercase tracking-[0.12em] text-void
+                transition-all hover:bg-[#3E6BFF]
+                disabled:cursor-not-allowed
+                disabled:opacity-40
               "
             >
-              <span>
-                {isSubmitting
-                  ? "Submitting..."
-                  : "Submit"}
-              </span>
+              {isSubmitting
+                ? "Submitting..."
+                : "Submit"}
 
-              <span className="ml-8 transition-transform group-hover:translate-x-1">
+              <span className="transition-transform group-hover:translate-x-1">
                 →
               </span>
             </button>
-
-            <p className="mt-4 max-w-xl text-xs leading-5 text-ink-dim">
-              Your details will be used by the summit team to review
-              and process your delegate invitation.
-            </p>
           </div>
+
+          <p className="mt-5 text-center text-xs leading-5 text-ink-dim">
+            Your information will be used for delegate
+            registration and event-related communication.
+          </p>
+
         </motion.form>
       </div>
     </section>
   );
 }
 
-/* FORM SECTION */
-
-function FormSection({
-  number,
-  title,
-}: {
-  number: string;
-  title: string;
-}) {
-  return (
-    <div className="mb-8 flex items-center gap-4 border-b border-line pb-4">
-      <span className="text-xs font-medium tracking-[0.15em] text-[#3E6BFF]">
-        {number}
-      </span>
-
-      <h3 className="text-lg font-medium text-ink">
-        {title}
-      </h3>
-    </div>
-  );
-}
-
-/* INPUT */
+/* INPUT COMPONENT */
 
 function Input({
   label,
   value,
   onChange,
   required = false,
-  placeholder,
+  type = "text",
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   required?: boolean;
-  placeholder?: string;
+  type?: string;
 }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium text-ink">
-        {label}
-        {required && (
-          <span className="ml-1 text-[#3E6BFF]">*</span>
-        )}
-      </label>
-
       <input
-        type="text"
+        type={type}
         required={required}
         value={value}
-        placeholder={placeholder}
+        placeholder={label + (required ? "*" : "")}
         onChange={(e) => onChange(e.target.value)}
         className="
           w-full border border-line bg-transparent
           px-4 py-3.5 text-sm text-ink outline-none
-          placeholder:text-ink-dim/40 transition
-          focus:border-[#3E6BFF]
+          placeholder:text-ink-dim/60
+          transition focus:border-[#3E6BFF]
         "
       />
     </div>
