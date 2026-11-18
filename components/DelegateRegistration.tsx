@@ -123,7 +123,12 @@ export default function DelegateRegistration() {
   return (
     <section
       id="registration"
-      className="relative overflow-hidden bg-void px-6 py-16 lg:px-12 lg:py-4"
+      className=" relative mx-auto
+  w-full max-w-xl
+  max-h-[90vh] overflow-y-auto
+  border border-line
+  bg-void
+  p-5 md:p-8"
     >
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
@@ -134,7 +139,7 @@ export default function DelegateRegistration() {
         <div className="absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-[#3E6BFF]/5 blur-[130px]" />
       </div>
 
-      <div className="relative mx-auto max-w-5xl">
+      <div className="relative mx-auto max-w-xl w-full">
 
         {/* Heading */}
         <div className="mx-auto mb-10 max-w-2xl text-center">

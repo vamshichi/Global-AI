@@ -35,7 +35,7 @@ export function Stats() {
   return (
     <section
       id="market-intelligence"
-      className="relative isolate overflow-hidden bg-[#102A56] py-14 text-white sm:py-20 lg:py-28 xl:py-32"
+      className="relative isolate overflow-hidden bg-[#102A56] py-10 text-white sm:py-10 lg:py-18 xl:py-12"
     >
       {/* Background details */}
       <div

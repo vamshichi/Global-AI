@@ -69,20 +69,20 @@ export function StormTimeline() {
   return (
     <section
       id="storm-timeline"
-      className="bg-white py-20 text-[#102A56] md:py-28 lg:py-32"
+      className="bg-white py-5 text-[#102A56] md:py-10 lg:py-10"
     >
       <div className="container-edge">
 
         {/* INTRODUCTION */}
         <motion.div {...reveal()} className="max-w-4xl">
 
-          <div className="mb-6 flex items-center gap-3">
+          {/* <div className="mb-6 flex items-center gap-3">
             <span className="h-px w-8 bg-[#155EEF]" />
 
             <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#155EEF]">
               AI Governance Intelligence · 2027
             </span>
-          </div>
+          </div> */}
 
           <h2 className="text-4xl font-semibold leading-[1.12] tracking-[-0.045em] sm:text-5xl md:text-6xl lg:text-[68px]">
             The next 90 days will shape{" "}

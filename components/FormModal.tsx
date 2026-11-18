@@ -43,7 +43,7 @@ export default function FormModal({ type, onClose }: FormModalProps) {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="relative my-auto w-full max-w-6xl overflow-hidden border border-white/10 bg-[#0b0d12] shadow-2xl">
+      <div className="relative my-auto w-full max-w-xl overflow-hidden border border-white/10 bg-[#0b0d12] shadow-2xl">
         <button
           type="button"
           onClick={onClose}

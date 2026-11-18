@@ -269,7 +269,7 @@ export function Navbar() {
                 scale: 0.98,
               }}
               transition={{ duration: 0.35 }}
-              className="absolute inset-0 overflow-y-auto bg-[#080A10] lg:inset-x-[5vw] lg:bottom-[3vh] lg:top-[3vh] lg:border lg:border-white/10"
+              className="absolute inset-x-0 bottom-[3vh] top-[3vh] overflow-y-auto bg-[#080A10] lg:border-y lg:border-white/10"
             >
               {/* POPUP HEADER */}
               <div className="sticky top-0 z-20 border-b border-white/10 bg-[#080A10]/90 px-6 py-5 backdrop-blur-xl md:px-10">
