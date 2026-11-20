@@ -171,60 +171,75 @@ export function Navbar() {
         </div>
 
         {/* MOBILE MENU */}
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
+        
+{/* MOBILE MENU */}
+<AnimatePresence>
+  {open && (
+    <motion.div
+      id="mobile-navigation"
+      initial={{ opacity: 0, y: -12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -12 }}
+      transition={{
+        duration: 0.25,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className="absolute left-0 right-0 top-full z-50 max-h-[calc(100dvh-75px)] overflow-y-auto overscroll-contain border-t border-white/10 bg-[#05070B] shadow-2xl shadow-black/30 xl:hidden"
+    >
+      <div className="flex flex-col px-5 pb-8 pt-4 sm:px-8 md:px-10">
+
+        {/* NAVIGATION LINKS */}
+        <nav className="flex flex-col">
+          {navLinks.map((link, index) => (
+            <motion.a
+              key={link.href}
+              href={link.href}
+              onClick={() => setOpen(false)}
+              initial={{ opacity: 0, x: -12 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{
-                duration: 0.35,
-                ease: [0.16, 1, 0.3, 1],
+                delay: index * 0.04,
+                duration: 0.3,
               }}
-              className="overflow-hidden border-t border-white/[0.08] bg-[#05070B]/95 backdrop-blur-2xl xl:hidden"
+              className="group flex min-h-[54px] items-center justify-between gap-3 border-b border-white/[0.08] py-4 text-sm font-medium text-white/75 transition-colors hover:text-white sm:text-base"
             >
-              <div className="flex flex-col px-6 pb-8 pt-5 md:px-10">
-                {navLinks.map((link, index) => (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    initial={{ opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="group flex items-center justify-between border-b border-white/[0.07] py-4 text-lg font-medium text-white/80 transition hover:text-white"
-                  >
-                    {link.label}
+              <span>{link.label}</span>
 
-                    <ArrowUpRight
-                      size={17}
-                      className="text-white/30 transition group-hover:text-white"
-                    />
-                  </motion.a>
-                ))}
+              <ArrowUpRight
+                size={17}
+                className="shrink-0 text-white/30 transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white"
+              />
+            </motion.a>
+          ))}
+        </nav>
 
-                <div className="mt-6 flex flex-col gap-3">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    onClick={openContact}
-                    className="w-full"
-                  >
-                    Contact Us
-                  </Button>
+        {/* MOBILE CTA BUTTONS */}
+        <div className="mt-6 flex flex-col gap-3">
 
-                  <button
-                    type="button"
-                    onClick={openPartnership}
-                    className="py-3 text-sm text-white/60 transition hover:text-white"
-                  >
-                    Become a Sponsor
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+          <Button
+            type="button"
+            variant="primary"
+            onClick={openContact}
+            className="flex min-h-12 w-full items-center justify-center"
+          >
+            Contact Us
+          </Button>
+
+          <button
+            type="button"
+            onClick={openPartnership}
+            className="flex min-h-12 w-full items-center justify-center rounded-full border border-white/15 px-5 py-3 text-sm font-medium text-white/75 transition hover:border-white/30 hover:bg-white/5 hover:text-white"
+          >
+            Become a Sponsor
+          </button>
+
+        </div>
+
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
       </header>
 
       {/* CONTACT / SPONSOR POPUP */}

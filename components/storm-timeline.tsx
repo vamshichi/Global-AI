@@ -69,42 +69,35 @@ export function StormTimeline() {
   return (
     <section
       id="storm-timeline"
-      className="bg-white py-5 text-[#102A56] md:py-10 lg:py-10"
+      className="w-full overflow-hidden bg-white py-8 text-[#102A56] sm:py-10 md:py-14 lg:py-16"
     >
       <div className="container-edge">
 
         {/* INTRODUCTION */}
-        <motion.div {...reveal()} className="max-w-4xl">
-
-          {/* <div className="mb-6 flex items-center gap-3">
-            <span className="h-px w-8 bg-[#155EEF]" />
-
-            <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#155EEF]">
-              AI Governance Intelligence · 2027
-            </span>
-          </div> */}
-
-          <h2 className="text-4xl font-semibold leading-[1.12] tracking-[-0.045em] sm:text-5xl md:text-6xl lg:text-[68px]">
+        <motion.div
+          {...reveal()}
+          className="w-full max-w-4xl"
+        >
+          <h2 className="text-[clamp(2rem,5.5vw,4.25rem)] font-semibold leading-[1.12] tracking-[-0.045em]">
             The next 90 days will shape{" "}
             <span className="text-[#155EEF]">
               the future of AI.
             </span>
           </h2>
 
-          <p className="mt-7 max-w-2xl text-base leading-8 text-[#647A98] md:text-lg">
+          <p className="mt-5 max-w-2xl text-sm leading-7 text-[#647A98] sm:mt-7 sm:text-base sm:leading-8 md:text-lg">
             India is entering a defining period for artificial
             intelligence. The decisions made today will determine
             how AI is governed, secured and trusted tomorrow.
           </p>
-
         </motion.div>
 
         {/* GOVERNANCE PILLARS */}
         <motion.div
           {...reveal(0.1)}
-          className="mt-14 border-y border-[#E5ECF5] py-6 md:mt-16"
+          className="mt-10 border-y border-[#E5ECF5] py-6 sm:mt-12 md:mt-16 md:py-8"
         >
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-0">
+          <div className="grid grid-cols-1 gap-5 min-[420px]:grid-cols-2 md:grid-cols-4 md:gap-0">
 
             {pillars.map((pillar, index) => {
               const Icon = pillar.icon;
@@ -112,22 +105,25 @@ export function StormTimeline() {
               return (
                 <div
                   key={pillar.name}
-                  className={`flex items-center gap-3 ${
+                  className={`flex min-w-0 items-center gap-3 sm:gap-4 ${
                     index !== 0
-                      ? "md:border-l md:border-[#E5ECF5] md:pl-8"
+                      ? "md:border-l md:border-[#E5ECF5] md:pl-5 lg:pl-8"
                       : ""
                   }`}
                 >
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#F1F6FF] text-[#155EEF]">
-                    <Icon size={19} strokeWidth={1.7} />
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#F1F6FF] text-[#155EEF] sm:h-14 sm:w-14 lg:h-16 lg:w-16">
+                    <Icon
+                      size={19}
+                      strokeWidth={1.7}
+                    />
                   </div>
 
-                  <div>
-                    <p className="text-[12px] font-semibold tracking-widest text-[#91A3BC]">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-semibold tracking-widest text-[#91A3BC] sm:text-xs">
                       {pillar.number}
                     </p>
 
-                    <p className="mt-1 text-2xl font-semibold text-[#102A56]">
+                    <p className="mt-1 break-words text-base font-semibold text-[#102A56] sm:text-lg lg:text-xl">
                       {pillar.name}
                     </p>
                   </div>
@@ -139,30 +135,32 @@ export function StormTimeline() {
         </motion.div>
 
         {/* TIMELINE AND VIDEO */}
-        <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+        <div className="mt-12 grid grid-cols-1 gap-10 sm:mt-16 sm:gap-12 lg:mt-20 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12 xl:gap-16">
 
           {/* LEFT: TIMELINE */}
-          <motion.div {...reveal()}>
-
-            <div className="mb-8 flex items-end justify-between">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#155EEF]">
+          <motion.div
+            {...reveal()}
+            className="min-w-0"
+          >
+            <div className="mb-6 flex items-end justify-between gap-3 sm:mb-8">
+              <div className="min-w-0">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#155EEF] sm:text-[10px] sm:tracking-[0.2em]">
                   The Regulatory Window
                 </p>
 
-                <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[#102A56]">
+                <h3 className="mt-2 text-xl font-semibold tracking-tight text-[#102A56] sm:mt-3 sm:text-2xl">
                   Key milestones
                 </h3>
               </div>
 
-              <span className="text-xs font-medium text-[#91A3BC]">
+              <span className="shrink-0 text-[10px] font-medium text-[#91A3BC] sm:text-xs">
                 {String(activeIndex + 1).padStart(2, "0")} /{" "}
                 {String(stormTimeline.length).padStart(2, "0")}
               </span>
             </div>
 
             {/* PROGRESS */}
-            <div className="mb-8 h-[2px] w-full bg-[#EAF0F8]">
+            <div className="mb-6 h-[2px] w-full bg-[#EAF0F8] sm:mb-8">
               <motion.div
                 className="h-full bg-[#155EEF]"
                 animate={{ width: `${progress}%` }}
@@ -194,16 +192,15 @@ export function StormTimeline() {
                       duration: 0.45,
                       delay: reduceMotion ? 0 : index * 0.05,
                     }}
-                    className={`group flex w-full items-start gap-5 border-b border-[#EAF0F8] px-3 py-5 text-left transition-colors duration-300 ${
+                    className={`group flex w-full min-w-0 items-start gap-3 border-b border-[#EAF0F8] px-2 py-4 text-left transition-colors duration-300 sm:gap-5 sm:px-3 sm:py-5 ${
                       active
                         ? "bg-[#F6F9FF]"
                         : "hover:bg-[#FAFCFF]"
                     }`}
                   >
-
                     {/* NUMBER */}
                     <div
-                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold transition-colors duration-300 ${
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold transition-colors duration-300 sm:h-9 sm:w-9 sm:text-xs ${
                         active
                           ? "bg-[#155EEF] text-white"
                           : completed
@@ -217,9 +214,9 @@ export function StormTimeline() {
                     {/* CONTENT */}
                     <div className="min-w-0 flex-1">
 
-                      <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center justify-between gap-2">
                         <span
-                          className={`text-[9px] font-semibold uppercase tracking-[0.16em] ${
+                          className={`min-w-0 break-words text-[9px] font-semibold uppercase tracking-[0.12em] sm:text-[10px] sm:tracking-[0.16em] ${
                             active
                               ? "text-[#155EEF]"
                               : "text-[#91A3BC]"
@@ -239,7 +236,7 @@ export function StormTimeline() {
                       </div>
 
                       <h4
-                        className={`mt-2 text-base font-semibold transition-colors sm:text-lg ${
+                        className={`mt-2 break-words text-sm font-semibold transition-colors sm:text-lg ${
                           active
                             ? "text-[#102A56]"
                             : "text-[#45658C] group-hover:text-[#155EEF]"
@@ -248,7 +245,7 @@ export function StormTimeline() {
                         {entry.date}
                       </h4>
 
-                      <p className="mt-2 text-sm leading-6 text-[#7A8DA7]">
+                      <p className="mt-2 break-words text-xs leading-6 text-[#7A8DA7] sm:text-sm">
                         {entry.headline}
                       </p>
 
@@ -258,19 +255,17 @@ export function StormTimeline() {
               })}
 
             </div>
-
           </motion.div>
 
           {/* RIGHT: VIDEO */}
           <motion.div
             {...reveal(0.15)}
-            className="lg:sticky lg:top-28 lg:self-start"
+            className="min-w-0 lg:sticky lg:top-28 lg:self-start"
           >
-
             <div className="overflow-hidden rounded-sm bg-[#102A56]">
 
               {/* VIDEO */}
-              <div className="relative">
+              <div className="relative w-full">
                 <video
                   ref={videoRef}
                   className="aspect-video w-full object-cover"
@@ -289,12 +284,12 @@ export function StormTimeline() {
                   />
                 </video>
 
-                {/* SIMPLE VIDEO CONTROL */}
+                {/* VIDEO CONTROL */}
                 <button
                   type="button"
                   onClick={toggleVideo}
                   aria-label={isPlaying ? "Pause video" : "Play video"}
-                  className="absolute bottom-5 right-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/60 bg-[#102A56]/60 text-white backdrop-blur-sm transition hover:bg-white hover:text-[#155EEF]"
+                  className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-[#102A56]/60 text-white backdrop-blur-sm transition hover:bg-white hover:text-[#155EEF] sm:bottom-5 sm:right-5 sm:h-11 sm:w-11"
                 >
                   {isPlaying ? (
                     <Pause size={17} />
@@ -305,9 +300,9 @@ export function StormTimeline() {
               </div>
 
               {/* VIDEO INFORMATION */}
-              <div className="p-6 sm:p-8">
+              <div className="p-4 sm:p-6 md:p-8">
 
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#A8C9FF]">
+                <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#A8C9FF] sm:text-[10px] sm:tracking-[0.2em]">
                   AI Regulatory Intelligence
                 </p>
 
@@ -325,22 +320,24 @@ export function StormTimeline() {
                     }
                     transition={{ duration: 0.3 }}
                   >
-                    <h3 className="mt-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                    <h3 className="mt-3 break-words text-xl font-semibold tracking-tight text-white sm:mt-4 sm:text-2xl md:text-3xl">
                       {activeEntry.date}
                     </h3>
 
-                    <p className="mt-3 max-w-lg text-sm leading-7 text-white/65">
+                    <p className="mt-3 max-w-lg text-xs leading-6 text-white/65 sm:text-sm sm:leading-7">
                       {activeEntry.headline}
                     </p>
                   </motion.div>
                 </AnimatePresence>
 
-                <div className="mt-7 flex items-center justify-between border-t border-white/15 pt-5">
-                  <p className="text-2xl text-white/55">
+                {/* FOOTER */}
+                <div className="mt-5 flex flex-col items-start gap-3 border-t border-white/15 pt-4 sm:mt-7 sm:flex-row sm:items-center sm:justify-between sm:pt-5">
+
+                  <p className="max-w-full text-lg leading-snug text-white/55 sm:text-xl md:text-2xl">
                     India's AI future is being shaped now.
                   </p>
 
-                  <span className="text-xs font-semibold text-[#A8C9FF]">
+                  <span className="shrink-0 text-[10px] font-semibold text-[#A8C9FF] sm:text-xs">
                     {String(activeIndex + 1).padStart(2, "0")} /{" "}
                     {String(stormTimeline.length).padStart(2, "0")}
                   </span>
@@ -349,7 +346,7 @@ export function StormTimeline() {
               </div>
             </div>
 
-            <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.16em] text-[#91A3BC]">
+            <p className="mt-3 text-[9px] font-medium uppercase tracking-[0.12em] text-[#91A3BC] sm:mt-4 sm:text-[10px] sm:tracking-[0.16em]">
               Policy · Governance · Enterprise AI
             </p>
 

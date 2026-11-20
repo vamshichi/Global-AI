@@ -183,7 +183,8 @@ export function WhyAttend() {
         <div className="container-edge relative z-10">
           {/* ------------------------------ HEADING ------------------------------ */}
           <motion.div {...reveal()} className="mb-12 lg:mb-14">
-            <Eyebrow>Why Attend</Eyebrow>
+            <Eyebrow><h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl pb-6">Why Attend</h2>
+</Eyebrow>
 
             <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
@@ -304,7 +305,9 @@ export function WhyAttend() {
             {/* Header */}
             <div className="relative z-10 mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div>
-                <Eyebrow>Who Should Attend</Eyebrow>
+                {/* <Eyebrow></Eyebrow> */}
+                <Eyebrow><h2 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl pb-6">Who Should Attend</h2>
+</Eyebrow>
 
                 <h3 className="max-w-2xl text-3xl font-semibold leading-tight text-white sm:text-4xl lg:text-5xl">
                   Designed for the leaders{" "}
