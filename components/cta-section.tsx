@@ -101,54 +101,41 @@ export function CtaSection() {
             </div>
           </motion.div>
 
-          {/* Three Action Buttons */}
-          <div className="mx-auto mt-14 grid max-w-5xl gap-4 md:grid-cols-3 lg:mt-16">
-            {actions.map((action, index) => (
-              <motion.button
-                key={action.label}
-                type="button"
-                onClick={() => setActiveForm(action.type)}
-                {...reveal(index * 0.1)}
-                whileHover={
-                  reducedMotion ? undefined : { y: -6 }
-                }
-                whileTap={
-                  reducedMotion ? undefined : { scale: 0.97 }
-                }
-                className={`group flex min-h-[170px] w-full flex-col justify-between border p-6 text-left transition-all duration-300 sm:p-7 ${
-                  action.primary
-                    ? "border-[#D9BD8C] bg-[#D9BD8C] text-[#102A56] hover:bg-[#E8D3AB]"
-                    : "border-white/20 bg-white/[0.04] text-white hover:border-white/50 hover:bg-white/[0.09]"
-                }`}
-              >
-                <div className="flex w-full items-center justify-between gap-3">
-                  <span className="text-base font-semibold tracking-tight sm:text-lg">
-                    {action.label}
-                  </span>
+          
+{/* Three Action Buttons */}
+<div className="mx-auto mt-14 grid max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:mt-16">
+  {actions.map((action) => (
+    <button
+      key={action.label}
+      type="button"
+      onClick={() => setActiveForm(action.type)}
+      className={`group flex min-h-[40px] w-full flex-col justify-between border p-5 text-left transition-colors duration-300 sm:p-7 ${
+        action.primary
+          ? "border-[#D9BD8C] bg-[#D9BD8C] text-[#102A56] hover:bg-[#E8D3AB]"
+          : "border-white/20 bg-white/[0.04] text-white hover:border-white/50 hover:bg-white/[0.09]"
+      }`}
+    >
+      <div className="flex w-full items-center justify-between gap-3">
+        <span className="text-base font-semibold tracking-tight sm:text-lg">
+          {action.label}
+        </span>
 
-                  <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 ${
-                      action.primary
-                        ? "border-[#102A56]/20"
-                        : "border-white/25"
-                    }`}
-                  >
-                    <ArrowUpRight size={17} />
-                  </span>
-                </div>
+        <span
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${
+            action.primary
+              ? "border-[#102A56]/20"
+              : "border-white/25"
+          }`}
+        >
+          <ArrowUpRight size={17} />
+        </span>
+      </div>
 
-                <p
-                  className={`mt-7 max-w-[240px] text-xs leading-6 ${
-                    action.primary
-                      ? "text-[#102A56]/75"
-                      : "text-white/60"
-                  }`}
-                >
-                  {action.description}
-                </p>
-              </motion.button>
-            ))}
-          </div>
+    
+    </button>
+  ))}
+</div>
+
 
           {/* Footer Note */}
           <motion.div
