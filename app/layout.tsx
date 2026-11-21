@@ -8,6 +8,7 @@ import "@fontsource/newsreader/400-italic.css";
 import "@fontsource/newsreader/500.css";
 import "@fontsource/newsreader/600-italic.css";
 import "./globals.css";
+import WhatsAppButton from "@/components/WhatsAppButton";
 
 const siteUrl = "https://www.aigrcssummit.in";
 
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-void font-sans text-ink antialiased selection:bg-signal selection:text-void">
         {children}
+        <WhatsAppButton />
       </body>
     </html>
   );
