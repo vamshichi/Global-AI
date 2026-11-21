@@ -7,6 +7,27 @@ import { ArrowUpRight } from "lucide-react";
 
 const speakers = [
   {
+    id: 0,
+    name: "Dr. Pavan Duggal",
+    designation: "Senior Advocate, Supreme Court of India Expert Authority on Artificial Intelligence Law, Cyber Security & Cybercrime Law",
+    organisation: "Founder and Global Chairman, International AI Accountability Forum",
+    image: "/images/speakers/Dr. Pavan Duggal.jpg",
+  },
+  {
+    id: 6,
+    name: "Ram Mohan Rao",
+    designation: "Executive Director",
+    organisation: "SEBI",
+    image: "/images/speakers/ram-mohan-rao.png",
+  },
+  // {
+  //   id: 7,
+  //   name: "Sanjeev Rastogi",
+  //   designation: "Group Head & CEO",
+  //   organisation: "GCC Center, Adani Group",
+  //   image: "/images/speakers/sanjeev-rastogi.png",
+  // },
+  {
     id: 1,
     name: "N. Ramesh",
     designation: "Deputy Director General (Technology)",
@@ -23,13 +44,6 @@ const speakers = [
     image: "/images/speakers/saurabh-gugnani.PNG",
   },
   {
-    id: 3,
-    name: "Neelaksshi Shaalla",
-    designation: "Chief Risk Officer",
-    organisation: "Bharti AXA Life Insurance",
-    image: "/images/speakers/neelaksshi-shaalla.jpg",
-  },
-  {
     id: 4,
     name: "Mayur Kapur",
     designation: "Chief Strategy Officer - Asia ",
@@ -37,12 +51,48 @@ const speakers = [
     image: "/images/speakers/mayur-kapur.jpg",
   },
   {
+    id: 8,
+    name: "Ashish Aggarwal",
+    designation: "Vice President, Head of Public Policy",
+    organisation: "NASSCOM",
+    image: "/images/speakers/ashish-aggarwal.jpg",
+  },
+  {
+    id: 9,
+    name: "Krishnanand B",
+    designation: "Chief Privacy, AI Governance, and Data Protection",
+    organisation: "IDBI Bank",
+    image: "/images/speakers/krishnanand-b.jpg",
+  },
+  // {
+  //   id: 10,
+  //   name: "Amit Ghodekar",
+  //   designation: "Global CISO",
+  //   organisation: "Aramex International",
+  //   image: "/images/speakers/amit-ghodekar.png",
+  // },
+  {
     id: 5,
     name: "Dr. Saurabh Pramanick, PhD",
     designation: "Data and AI Governance Officer",
     organisation: "Bank Muscat",
     image: "/images/speakers/saurabh-pramanick.jpg",
+  },
+  {
+    id: 3,
+    name: "Neelaksshi Shaalla",
+    designation: "Chief Risk Officer",
+    organisation: "Bharti AXA Life Insurance",
+    image: "/images/speakers/neelaksshi-shaalla.jpg",
+  },
+  {
+    id: 11,
+    name: "Prafful Goel",
+    designation: "CISO",
+    organisation: "Indifi Capital",
+    image: "/images/speakers/prafful-goel.jpg",
   }
+  
 ];
 
 export function SpeakersSection() {
